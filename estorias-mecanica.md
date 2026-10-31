@@ -65,6 +65,35 @@ Depende: se a carta do veículo conta entre os itens segurados e como se abre ou
 
 ---
 
+## 21. Menu e configurações [base]
+
+**US-21.1** Como jogador, quero um menu inicial ao abrir o jogo, com "Iniciar jogo" e "Configurações", para começar ou ajustar o jogo.
+Aceite: a primeira tela é o menu com os dois botões, e "Iniciar jogo" abre o jogo.
+Regras: MN1, MN2, MN5
+
+**US-21.2** Como jogador, quero abrir as configurações e voltar ao menu, para ajustar o jogo sem iniciá-lo.
+Aceite: "Configurações" abre a tela de configurações, e o botão de voltar leva ao menu.
+Regras: MN3, MN4, MN5
+
+**US-21.3** Como jogador, quero escolher o monitor, o modo de janela e a resolução, para o jogo rodar do jeito que meu computador pede.
+Aceite: aparecem só os monitores conectados e as resoluções que cabem no escolhido. A resolução fica indisponível em tela cheia.
+Regras: VD1, VD2, VD3
+
+**US-21.4** Como jogador, quero ver a frequência do meu monitor e escolher um limite de FPS, para controlar a fluidez.
+Aceite: a tela mostra a taxa do monitor escolhido e as opções de limite, com "sem limite" como padrão.
+Regras: VD4
+Depende: se a frequência deve ser só informativa com limite de FPS.
+
+**US-21.5** Como jogador, quero ligar e desligar o V-Sync, que vem ligado, para ajustar à minha máquina.
+Aceite: o V-Sync começa ligado, e a escolha é aplicada ao clicar em "Aplicar".
+Regras: VD5, VD6
+
+**US-21.6** Como jogador, quero que minhas escolhas de vídeo fiquem salvas, para não refazer a cada vez.
+Aceite: ao clicar em "Aplicar", as escolhas valem na hora e são salvas. Ao reabrir o jogo, elas são reaplicadas.
+Regras: VD6
+
+---
+
 ## 1. Receitas por arrastar [base]
 
 **US-1.1** Como jogador, quero arrastar uma carta sobre outra para executar uma receita.

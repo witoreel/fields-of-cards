@@ -12,6 +12,10 @@ Etiquetas: **[base]** se implementa primeiro, **[depois]** vem em seguida.
 As cartas vivem em cinco áreas (mão, mochila, storage, local e stage, o chão), que não precisam estar visíveis ao mesmo tempo. A mão, talvez na lateral, guarda um ou dois itens segurados, a carta da mochila e, se houver, a carta do veículo, de acesso rápido. Selecionar a carta da mochila a abre embaixo, e clicar nela aberta a fecha. Selecionar a carta de um storage o abre em cima, no lugar do local, e o ícone dele aberto vai para a mão; ao fechar, a carta volta para o local (o mesmo vale para o veículo). O chão está sempre disponível, e as cartas móveis passam de uma área aberta a outra. As cartas têm propriedades que se combinam (local, ferramenta, acumulável, móvel, inerente ao local, veículo) e podem ter buffs e debuffs. O núcleo é feito para evoluir e suportar as pendências futuras.
 Regras: AR1–AR10, C1, C7, C8, C9, L8, Z8
 
+### 21. Menu e configurações [base]
+O jogo abre num menu inicial com "Iniciar jogo" e "Configurações", sem animação entre telas. As configurações começam pelo vídeo: monitor, modo de janela, resolução, frequência (taxa do monitor e limite de FPS) e V-Sync. As escolhas são aplicadas com um botão, salvas e reaplicadas ao abrir o jogo.
+Regras: MN1–MN5, VD1–VD6
+
 ---
 
 ## Núcleo

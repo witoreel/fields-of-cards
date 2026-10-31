@@ -24,7 +24,12 @@ Primeiro momento: a feature 20 (áreas e movimentação de cartas). Faça o núc
 
 ## Testes e simulação
 - Testes unitários com GUT ou gdUnit4, rodando pela linha de comando.
+- Verificação atual (sem GUT ainda): `godot --headless --path . -s tests/check_video_settings.gd`.
 - Simulação de longa duração em modo headless com bots, registrando métricas (dias até falir, saldo médio, taxa de atraso).
+
+## Estrutura
+- `src/` motor e configuração sem UI (`RefCounted`). `ui/` cenas e scripts de tela. `tests/` verificações.
+- A primeira cena é o menu inicial (`ui/main_menu.tscn`). As configurações de vídeo ficam em `src/config/video_settings.gd`.
 
 ## Fluidez e conforto (requisito crítico)
 O desenvolvedor tem motion sickness, e o jogo precisa ser perfeitamente fluido a 180 Hz.

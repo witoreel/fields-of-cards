@@ -146,6 +146,21 @@ Como ler:
 
 ---
 
+## Menu e configurações [base]
+- MN1. Ao abrir o jogo, a primeira tela é o menu inicial.
+- MN2. O menu inicial tem "Iniciar jogo" e "Configurações".
+- MN3. "Configurações" abre a tela de configurações, que tem um botão para voltar ao menu.
+- MN4. As configurações começam só com a parte de vídeo. Outras partes (som, controles) vêm depois.
+- MN5. A troca entre telas é instantânea, sem animação (W5, W6).
+- VD1. O vídeo tem: monitor, modo de janela (janela ou tela cheia), resolução, frequência e V-Sync.
+- VD2. O monitor escolhido é onde o jogo roda. Só aparecem os monitores conectados.
+- VD3. A resolução só vale no modo janela e só oferece tamanhos que cabem no monitor escolhido.
+- VD4. A frequência mostra a taxa de atualização do monitor e deixa escolher um limite de FPS. O padrão é sem limite (W2). A taxa do monitor em si é definida pelo sistema, não pelo jogo.
+- VD5. O V-Sync vem ligado por padrão (W2).
+- VD6. As mudanças só valem ao clicar em "Aplicar", que também as salva. As configurações salvas são aplicadas ao abrir o jogo.
+
+---
+
 ## Arquitetura e testes [base]
 - Z1. O motor de regras é separado da interface: classes `RefCounted`, sem `Node`, cena ou UI.
 - Z2. A API é de comandos (`apply_recipe`, `advance_time`, `get_state`). A interface só chama a API.
@@ -195,3 +210,5 @@ Como ler:
 - Se a carta do veículo na mão conta entre os itens segurados (um ou dois) e como se abre ou fecha o veículo (L8).
 - Relação entre os status das cartas e os buffs e debuffs (ver `pendencias-futuras.md`).
 - Clima, estações.
+- Se o menu inicial ganha "Continuar" e "Sair" (hoje só "Iniciar jogo" e "Configurações").
+- Se a frequência deve ser só informativa com limite de FPS (VD4) ou se há outra intenção para ela.
