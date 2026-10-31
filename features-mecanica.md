@@ -9,11 +9,11 @@ Etiquetas: **[base]** se implementa primeiro, **[depois]** vem em seguida.
 ## Núcleo
 
 ### 1. Receitas por arrastar [base]
-Arrastar uma carta sobre outra executa uma receita (A + B = C), com custo em minutos e consumo ou desgaste da ferramenta. Conteúdo novo é só dado.
-Regras: C2, C3, C6, R1–R7
+Arrastar uma carta sobre outra executa uma receita (A + B = C), com custo em minutos e consumo ou desgaste da ferramenta. Conteúdo novo é só dado. No dia sem rega, o crescimento da roça fica congelado.
+Regras: C2, C3, C6, R1–R7, R9
 
 ### 2. Relógio e dia [base]
-Toda ação gasta minutos, e o crescimento e os eventos seguem um relógio global. O dia termina à meia-noite, e o jogador acorda às 06:00. Passar das 22:00 acordado gera o debuff "cansado". Plantas crescem rápido e animais em ritmo mais realista (ainda não definitivo).
+Toda ação gasta minutos, ainda que o custo seja zero, e o crescimento e os eventos seguem um relógio global. O dia termina à meia-noite, e o jogador acorda às 06:00. Passar das 22:00 acordado gera o debuff "cansado". Plantas crescem rápido e animais em ritmo mais realista (ainda não definitivo).
 Regras: T1–T5, T7, T8, T9
 
 ### 3. Cartas, áreas e ordem [base]
@@ -25,7 +25,7 @@ Locais são cartas eternas que mudam onde o jogador está, cada um com a sua ár
 Regras: L1, L3, L4, L5, L6
 
 ### 5. Peso e capacidade [base]
-Todo item tem peso em gramas. A mochila e os storages têm limite de peso, e recipientes como o regador têm volume em gramas, gasto a cada uso.
+Toda carta móvel tem peso em gramas, exceto o dinheiro, e locais não têm peso. A mochila e os storages têm limite de peso, e recipientes como o regador têm volume em gramas, gasto a cada uso.
 Regras: P1, P2, P3, P5
 
 ### 6. Área da fazenda [base]
@@ -33,8 +33,8 @@ A fazenda tem um limite global em m² somando todos os locais. Terra bruta não 
 Regras: L7, N1, N2, N3
 
 ### 7. Economia [base]
-Itens são vendidos por dinheiro, compras gastam dinheiro e contas são cartas com prazo e valor. Pagar custa dinheiro e o tempo de ir à cidade, e o atraso gera multa e juros.
-Regras: D1, D2, D3, D4, D5, E1
+Itens são vendidos por dinheiro, e o dinheiro é uma carta de nota, sem peso. Compras gastam dinheiro e contas são cartas com prazo e valor. Pagar custa dinheiro e o tempo de ir à cidade, e a dívida gera multa. A venda em lote é feita num container na fazenda.
+Regras: D1, D2, D3, D4, D5, D9, E1
 
 ### 8. Dívida e falência [base]
 O tempo está ligado às dívidas, e a falência encerra o jogo. A consequência (perder tudo, voltar bem atrás, ou a polícia prender o jogador) está em estudo. A condição de vitória fica para depois.
@@ -61,7 +61,7 @@ O resultado das ações recebe multiplicadores: qualidade da ferramenta, skill, 
 Regras: V3, V4, V5, R8, E2, E3
 
 ### 13. Desgaste e manutenção [depois]
-Ferramentas têm durabilidade que cai com o uso, e as de corte têm fio. Afiar e limpar diminuem a degradação, e guardar ferramenta suja ou molhada a aumenta. Tiers de ferramenta (barata a premium) são uma ideia.
+Ferramentas têm durabilidade que cai com o uso, sem quebrar: quanto menor, mais tempo a mesma ação leva. As de corte têm fio. Afiar e limpar diminuem a degradação, e guardar ferramenta suja ou molhada a aumenta. Tiers de ferramenta (barata a premium) são uma ideia.
 Regras: G1, G2, G3, G4, G5, G6
 
 ### 14. Status de cartas [depois]
@@ -77,9 +77,17 @@ Cartas novas chegam ao chão do local e o jogador escolhe onde ficam. O chão n�
 Regras: H1, H2, H3, H4, H5
 
 ### 17. Correio [depois]
-Uma caixa de correio é um storage de cartas de correspondência, lidas ao clicar, sem gastar tempo. Traz avisos, dicas, envios, contas e promoções, sempre no início do dia.
+Uma caixa de correio é um storage de cartas de correspondência, lidas ao clicar, sem gastar tempo. Traz avisos, dicas e promoções, sempre no início do dia, e a carta lida pode vir com um item anexo, como a carta da conta.
 Regras: M1, M2, M3, M4, M5, T6
 
 ### 18. Progressão e desbloqueio [depois]
 Lugares, itens à venda e ferramentas são liberados aos poucos por eventos e correspondências, para o jogador se acostumar com cada mecânica.
 Regras: U1, U2
+
+---
+
+## Início do jogo
+
+### 19. Estado inicial [base]
+O jogo começa com uma enxada enferrujada, um regador furado e um pouco de dinheiro. A roça inicial está danificada, precisando de manutenção, e uma mensagem de boas-vindas no correio traz algumas sementes.
+Regras: I1, I2, I3

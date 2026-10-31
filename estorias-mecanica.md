@@ -42,8 +42,8 @@ Regras: R3, P5
 Depende: quanto de água cada m² precisa.
 
 **US-1.8** Como jogador, quero que a terra semeada cresça com o tempo, para colher depois.
-Aceite: com o passar do relógio, a terra semeada vira broto e depois fica pronta para colher.
-Regras: R4, T3
+Aceite: com o passar do relógio, a terra semeada vira broto e depois fica pronta para colher. No dia em que não houve rega, o crescimento da roça fica congelado.
+Regras: R4, T3, R9
 Depende: como estágios diferentes convivem num mesmo contador de terra arada.
 
 **US-1.9** Como jogador, quero colher o que está pronto, para ter itens de colheita para vender.
@@ -68,7 +68,7 @@ Aceite: o relógio global aparece na tela e mostra o horário atual.
 Regras: T2
 
 **US-2.2** Como jogador, quero que toda ação avance o relógio, para o tempo ser o meu recurso.
-Aceite: qualquer ação (inclusive viajar) avança o relógio no custo definido.
+Aceite: qualquer ação (inclusive viajar) avança o relógio no custo definido, que pode ser zero.
 Regras: T1
 
 **US-2.3** Como jogador, quero que plantas e eventos evoluam conforme o relógio, para o mundo andar sem mim.
@@ -131,8 +131,8 @@ Depende: como acessar os locais (carta mapa ou lista à direita).
 Aceite: o que está na mochila continua comigo ao mudar de local, e o resto fica onde está.
 Regras: L3
 
-**US-4.3** Como jogador, quero ter os locais iniciais: casa, fazenda, floresta e cidade.
-Aceite: no começo do jogo esses quatro locais existem e podem ser visitados.
+**US-4.3** Como jogador, quero ter os locais iniciais: fazenda (com a casa dentro), floresta e cidade.
+Aceite: no começo do jogo esses locais existem e podem ser visitados.
 Regras: L4
 
 **US-4.4** Como jogador, quero escolher, dentro da cidade, entre as lojas e a feira.
@@ -151,8 +151,8 @@ Regras: L6
 
 ## 5. Peso e capacidade [base]
 
-**US-5.1** Como jogador, quero ver o peso de cada item, para decidir o que levar.
-Aceite: toda carta de item mostra o seu peso em gramas.
+**US-5.1** Como jogador, quero ver o peso de cada carta móvel, para decidir o que levar.
+Aceite: toda carta móvel mostra o seu peso em gramas, exceto o dinheiro, e locais não têm peso.
 Regras: P1
 
 **US-5.2** Como jogador, quero que a mochila tenha limite de peso, para ter de escolher o que carregar.
@@ -196,7 +196,7 @@ Regras: N1
 ## 7. Economia [base]
 
 **US-7.1** Como jogador, quero vender itens por dinheiro.
-Aceite: vender em lote converte o item em dinheiro.
+Aceite: colocar itens no container da fazenda vende em lote e converte os itens em dinheiro.
 Regras: D1, E1
 
 **US-7.2** Como jogador, quero comprar gastando dinheiro.
@@ -212,10 +212,14 @@ Depende: valores e frequência das contas.
 Aceite: pagar desconta o valor, e o deslocamento gasta minutos.
 Regras: D4
 
-**US-7.5** Como jogador, quero que o atraso gere multa e juros, e não o fim imediato do jogo.
-Aceite: uma conta vencida e não paga acumula multa e juros, e o jogo continua.
+**US-7.5** Como jogador, quero que a dívida gere multa, e não o fim imediato do jogo.
+Aceite: uma dívida gera multa, e o jogo continua.
 Regras: D5
-Depende: valores da multa e dos juros.
+Depende: valor da multa. Os malefícios da dívida ficam para depois.
+
+**US-7.6** Como jogador, quero que o dinheiro seja uma carta de nota, sem peso, para guardá-lo e usá-lo como as outras cartas.
+Aceite: o dinheiro aparece como carta em forma de nota e não conta no peso.
+Regras: D9
 
 ---
 
@@ -353,7 +357,7 @@ Depende: se paga mais ou menos que a venda em lote.
 ## 13. Desgaste e manutenção [depois]
 
 **US-13.1** Como jogador, quero que as ferramentas percam durabilidade com o uso.
-Aceite: usar uma ferramenta reduz a sua durabilidade.
+Aceite: usar uma ferramenta reduz a sua durabilidade, sem quebrar. Com durabilidade baixa, a mesma ação demora muito mais.
 Regras: G1
 
 **US-13.2** Como jogador, quero que ferramentas de corte tenham fio e que eu possa afiá-las.
@@ -436,17 +440,17 @@ Aceite: toda manhã, quando o jogador acorda, chegam cartas novas à caixa, que 
 Regras: M1, T6
 
 **US-17.2** Como jogador, quero ler uma carta ao clicar nela, sem gastar tempo.
-Aceite: clicar abre a carta, e o relógio não avança.
+Aceite: clicar abre a carta, e ler custa 0 minutos por enquanto.
 Regras: M2
 
 **US-17.3** Como jogador, quero receber avisos e dicas do jogo pelo correio.
 Aceite: avisos e dicas chegam como cartas de correspondência.
 Regras: M3
 
-**US-17.4** Como jogador, quero receber envios e contas pelo correio, que viram cartas na mochila.
-Aceite: um envio ou uma conta vira uma carta na mochila.
+**US-17.4** Como jogador, quero que uma carta de correspondência lida venha com um item anexo, como a carta da conta, para receber contas e outros itens.
+Aceite: ao ler a carta, o item anexo aparece para mim.
 Regras: M4
-Depende: confirmar se vai direto à mochila.
+Depende: para onde vai o item anexo (mochila ou chão).
 
 **US-17.5** Como jogador, quero promoções que durem por intervalos de dias.
 Aceite: uma promoção vale por um intervalo de dias e depois acaba.
@@ -463,3 +467,21 @@ Regras: U1
 **US-18.2** Como jogador, quero conhecer uma mecânica de cada vez, para me acostumar com cada uma.
 Aceite: a ordem de liberação introduz as mecânicas de forma gradual.
 Regras: U2
+
+---
+
+## 19. Estado inicial [base]
+
+**US-19.1** Como jogador, quero começar com uma enxada enferrujada, um regador furado e um pouco de dinheiro.
+Aceite: ao iniciar um jogo novo, tenho essas três coisas, e as ferramentas aparecem com os seus status.
+Regras: I1
+Depende: como consertar, e se os status e a manutenção entram na base.
+
+**US-19.2** Como jogador, quero que a roça inicial esteja danificada, precisando de manutenção.
+Aceite: no começo do jogo a roça existe e mostra que está danificada.
+Regras: I2
+Depende: manutenção e dano de construções (suplementos).
+
+**US-19.3** Como jogador, quero uma mensagem de boas-vindas no correio com algumas sementes, para começar a plantar.
+Aceite: a primeira carta da caixa de correio é de boas-vindas e vem com as sementes anexas.
+Regras: I3, M4

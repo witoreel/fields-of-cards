@@ -21,7 +21,7 @@ Como ler:
 - C6. Conteúdo novo (carta, receita) é dado, não código.
 
 ## Tempo [base]
-- T1. Toda ação gasta minutos.
+- T1. Toda ação gasta minutos, ainda que o custo seja zero. Os valores são balanceados depois.
 - T2. Existe um relógio global.
 - T3. Crescimento e eventos seguem o relógio.
 - T4. Dormir pula a noite: o relógio avança até as 06:00 do dia seguinte.
@@ -36,13 +36,14 @@ Como ler:
 - D2. Compras gastam dinheiro.
 - D3. Uma conta é uma carta com prazo e valor.
 - D4. Pagar uma conta custa dinheiro e o tempo de ir à cidade.
-- D5. Atraso gera multa e juros, sem game over imediato.
+- D5. Dívida gera multa. Atraso não causa game over imediato. Os malefícios da dívida ficam para depois.
 - D6. O tempo está diretamente associado às dívidas.
 - D7. O game over é a falência.
 - D8. A condição de vitória fica para depois.
+- D9. Dinheiro é uma carta, em forma de nota, e não tem peso.
 
 ## Peso e armazenamento [base]
-- P1. Todo item tem peso em gramas.
+- P1. Toda carta móvel (carregável) tem peso em gramas, exceto o dinheiro. Locais não têm peso.
 - P2. A mochila carrega itens e tem limite de peso.
 - P3. Um storage guarda itens, tem limite de peso e pode existir em locais.
 - P4. Mochila pesada gera um debuff.
@@ -52,7 +53,7 @@ Como ler:
 - L1. Locais são cartas eternas que mudam onde o jogador está.
 - L2. Cada local tem a sua própria área de cartas.
 - L3. Itens passam de um local a outro pela mochila.
-- L4. Locais do jogo: casa, fazenda, floresta e cidade. Lojas e feira ficam dentro da cidade.
+- L4. Locais do jogo: fazenda (com a casa dentro), floresta e cidade. Lojas e feira ficam dentro da cidade.
 - L5. A ferragem é uma das lojas (ferramentas e materiais).
 - L6. Dentro da fazenda ficam: casa, sheds, galinheiro, celeiro e roças (farmlands). Os construídos têm nome.
 - L7. A fazenda tem área em m², um limite global somando todos os locais.
@@ -71,11 +72,17 @@ Como ler:
 - R6. Machado ou serrote + árvore (na floresta) = madeira.
 - R7. Martelo + madeira = construir.
 - R8. Uma roça é um local construído que dá um multiplicador. O jogo começa com uma.
+- R9. O crescimento da roça fica congelado no dia em que não há rega.
 
 ## Falência [base]
 - F1. A falência encerra o jogo.
 - F2. Opções em estudo (aberto): perder tudo, ou uma penalidade que faz o jogador voltar bem atrás.
 - F3. Ideia: dívida alta traz a polícia, que prende o jogador, e as coisas estragam na fazenda.
+
+## Estado inicial [base]
+- I1. O jogo começa com uma enxada enferrujada, um regador furado e um pouco de dinheiro.
+- I2. A roça inicial começa danificada, precisando de manutenção.
+- I3. Uma mensagem de boas-vindas no correio traz algumas sementes como item anexo.
 
 ## Ações com tempo variável [depois]
 - V1. O resultado de uma ação depende do tempo gasto.
@@ -85,7 +92,7 @@ Como ler:
 - V5. O multiplicador da construção vale para qualquer trabalho feito dentro dela.
 
 ## Ferramentas [depois]
-- G1. Ferramentas têm durabilidade, que cai com o uso.
+- G1. Ferramentas têm durabilidade, que cai com o uso. A ferramenta não quebra: quanto menor a durabilidade, mais tempo a mesma ação leva.
 - G2. Ferramentas de corte têm fio. Afiar restaura o fio.
 - G3. Baixa durabilidade faz o fio se perder mais rápido.
 - G4. Torneira, palha de aço e óleo limpam a ferramenta e diminuem a degradação.
@@ -107,13 +114,13 @@ Como ler:
 
 ## Correio [depois]
 - M1. A caixa de correio é um storage cujas cartas são cartas de correspondência.
-- M2. Ao clicar, a carta é lida. Ler não gasta tempo.
+- M2. Ao clicar, a carta é lida. Ler custa 0 minutos por enquanto.
 - M3. O correio traz avisos e dicas do jogo.
-- M4. O correio também traz envios, que viram cartas na mochila (a confirmar). As contas entram aqui.
+- M4. Uma carta de correspondência lida vem com um item anexo, como a carta da conta ou as sementes da mensagem de boas-vindas.
 - M5. Promoções duram por intervalos de dias.
 
 ## Venda [depois]
-- E1. Venda em lote é a base.
+- E1. A venda em lote é feita num container na fazenda.
 - E2. Na feira, o jogador aluga um espaço e vende com multiplicador maior.
 - E3. A caixa de venda na fazenda vende com multiplicador menor.
 
@@ -155,10 +162,14 @@ Como ler:
 - Valores e frequência das contas.
 - O que torna duas cartas "iguais" para somar (C4).
 - Como estágios diferentes de plantio convivem num mesmo contador de terra arada.
-- Peso por carta ou por unidade (sementes, dinheiro).
+- Peso por carta ou por unidade (sementes e outros itens empilhados).
 - Água do regador: quanto cada m² precisa e como reabastece.
 - O que machado e serrote fazem de diferente.
 - Se a caixa de venda paga mais ou menos que a venda em lote (E3).
 - Se o aluguel do espaço na feira é por dia e quantas cartas cabem.
 - Fim do jogo e condição de vitória (fica para depois).
+- Quais cartas são móveis e carregáveis (terra arada, terra semeada, animais, construções).
+- Como consertar a enxada enferrujada, o regador furado e a roça danificada, e se os status e a manutenção entram na base, já que o estado inicial os usa.
+- Se o container de venda em lote e a caixa de venda na fazenda (E3) são a mesma coisa, e quando ele paga.
+- Para onde vai o item anexo de uma carta lida (mochila ou chão).
 - Clima, estações.
