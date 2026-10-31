@@ -161,6 +161,15 @@ Como ler:
 
 ---
 
+## Estado e save [base]
+- SV1. O jogo tem um estado: onde o jogador está e as cartas de cada local, na ordem (Z3). O que o jogo passar a guardar depois entra no mesmo estado.
+- SV2. Ao chegar a um local, o jogo salva sozinho (autosave).
+- SV3. Há um só save, sobrescrito a cada autosave (a confirmar).
+- SV4. O estado é do motor (Z1) e se converte em dados simples. O save guarda esses dados com a versão do formato, e um save ilegível ou de versão desconhecida é ignorado, sem derrubar o jogo.
+- SV5. O menu inicial tem "Continuar", que carrega o último save e só aparece se houver um.
+
+---
+
 ## Arquitetura e testes [base]
 - Z1. O motor de regras é separado da interface: classes `RefCounted`, sem `Node`, cena ou UI.
 - Z2. A API é de comandos (`apply_recipe`, `advance_time`, `get_state`). A interface só chama a API.
@@ -210,5 +219,8 @@ Como ler:
 - Se a carta do veículo na mão conta entre os itens segurados (um ou dois) e como se abre ou fecha o veículo (L8).
 - Relação entre os status das cartas e os buffs e debuffs (ver `pendencias-futuras.md`).
 - Clima, estações.
-- Se o menu inicial ganha "Continuar" e "Sair" (hoje só "Iniciar jogo" e "Configurações").
+- Quanto tempo gasta andar entre locais (T1). Hoje é zero, porque ainda não há relógio.
+- Se o jogo também salva ao iniciar um jogo novo, ao dormir e na virada de dia, e se haverá mais de um save (SV3).
+- O que fazer com "Iniciar jogo" quando já existe um save (hoje o save antigo só é trocado no primeiro autosave).
+- Se o menu inicial ganha "Sair" (hoje há "Iniciar jogo", "Configurações" e, com save, "Continuar").
 - Se a frequência deve ser só informativa com limite de FPS (VD4) ou se há outra intenção para ela.

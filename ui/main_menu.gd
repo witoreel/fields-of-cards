@@ -28,11 +28,15 @@ func _ready() -> void:
 	title.add_theme_font_size_override("font_size", 40)
 	box.add_child(title)
 
+	if SaveGame.exists():
+		var cont := _make_button("Continuar", box)
+		cont.pressed.connect(_on_continue_pressed)
 	var start := _make_button("Iniciar jogo", box)
 	start.pressed.connect(_on_start_pressed)
 	var settings := _make_button("Configurações", box)
 	settings.pressed.connect(_on_settings_pressed)
-	start.grab_focus()
+	# O foco vai para o primeiro botão do menu.
+	(box.get_child(1) as Button).grab_focus()
 
 
 func _make_button(text: String, parent: Control) -> Button:
@@ -43,7 +47,13 @@ func _make_button(text: String, parent: Control) -> Button:
 	return b
 
 
+func _on_continue_pressed() -> void:
+	if GameSession.continue_saved():
+		get_tree().change_scene_to_file(GAME_SCENE)
+
+
 func _on_start_pressed() -> void:
+	GameSession.start_new()
 	get_tree().change_scene_to_file(GAME_SCENE)
 
 

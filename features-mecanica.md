@@ -16,6 +16,10 @@ Regras: AR1–AR10, C1, C7, C8, C9, L8, Z8
 O jogo abre num menu inicial com "Iniciar jogo" e "Configurações", sem animação entre telas. As configurações começam pelo vídeo: monitor, modo de janela, resolução, frequência (taxa do monitor e limite de FPS) e V-Sync. As escolhas são aplicadas com um botão, salvas e reaplicadas ao abrir o jogo.
 Regras: MN1–MN5, VD1–VD6
 
+### 22. Estado e save [base]
+O jogo tem um estado do motor (onde o jogador está e as cartas de cada local, em ordem), que vira dados simples e é salvo sozinho a cada local em que o jogador chega. O menu oferece "Continuar" quando há um save.
+Regras: SV1–SV5
+
 ---
 
 ## Núcleo

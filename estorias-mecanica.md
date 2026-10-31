@@ -94,6 +94,27 @@ Regras: VD6
 
 ---
 
+## 22. Estado e save [base]
+
+**US-22.1** Como jogador, quero que o jogo guarde onde estou e as cartas de cada local, na ordem, para que nada se perca.
+Aceite: o estado tem o local atual e a lista ordenada de cartas de cada local, e converte para dados e de volta sem mudar nada.
+Regras: SV1, SV4
+
+**US-22.2** Como jogador, quero que o jogo salve sozinho ao chegar a um local, para não perder progresso.
+Aceite: toda vez que ando para um local, o save é gravado. Não há botão de salvar.
+Regras: SV2, SV3
+Depende: se também salva ao iniciar jogo novo, ao dormir e na virada de dia, e se haverá mais de um save.
+
+**US-22.3** Como jogador, quero continuar de onde parei, para retomar o jogo.
+Aceite: o menu mostra "Continuar" só se há save, e ele abre o jogo no local e com as cartas salvas.
+Regras: SV5
+
+**US-22.4** Como jogador, quero que um save quebrado não derrube o jogo, para poder começar de novo.
+Aceite: um save ilegível ou de versão desconhecida é ignorado, e "Continuar" não aparece.
+Regras: SV4
+
+---
+
 ## 1. Receitas por arrastar [base]
 
 **US-1.1** Como jogador, quero arrastar uma carta sobre outra para executar uma receita.
