@@ -13,8 +13,8 @@ Arrastar uma carta sobre outra executa uma receita (A + B = C), com custo em min
 Regras: C2, C3, C6, R1–R7
 
 ### 2. Relógio e dia [base]
-Toda ação gasta minutos, e o crescimento e os eventos seguem um relógio global. Dormir pula a noite. Plantas crescem rápido e animais em ritmo mais realista (ainda não definitivo).
-Regras: T1–T5
+Toda ação gasta minutos, e o crescimento e os eventos seguem um relógio global. O dia termina à meia-noite, e o jogador acorda às 06:00. Passar das 22:00 acordado gera o debuff "cansado". Plantas crescem rápido e animais em ritmo mais realista (ainda não definitivo).
+Regras: T1–T5, T7, T8, T9
 
 ### 3. Cartas, áreas e ordem [base]
 Cartas pertencem a áreas (local, storage, mochila), podem ser reordenadas e a ordem é preservada. Cartas iguais que chegam ao mesmo destino se somam, com sinal visual.
@@ -69,8 +69,8 @@ Cartas têm status próprios (sujo, molhado, enferrujado), separados dos buffs e
 Regras: S1, S2
 
 ### 15. Buffs e debuffs [depois]
-Alimentos geram buffs, a mochila pesada gera debuff, e construção danificada gera debuff no seu multiplicador.
-Regras: P4, S3, S4
+Alimentos geram buffs, a mochila pesada gera debuff, passar das 22:00 acordado gera o debuff "cansado", e construção danificada gera debuff no seu multiplicador.
+Regras: P4, S3, S4, T9
 
 ### 16. Chão e achados e perdidos [depois]
 Cartas novas chegam ao chão do local e o jogador escolhe onde ficam. O chão não tem limite, mas no fim do dia o que sobra vai para o achados e perdidos, por 7 dias, com aviso no correio.

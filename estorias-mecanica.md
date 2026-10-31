@@ -66,7 +66,6 @@ Regras: R7
 **US-2.1** Como jogador, quero ver a hora do dia, para planejar minhas ações.
 Aceite: o relógio global aparece na tela e mostra o horário atual.
 Regras: T2
-Depende: duração do dia e horário do relógio.
 
 **US-2.2** Como jogador, quero que toda ação avance o relógio, para o tempo ser o meu recurso.
 Aceite: qualquer ação (inclusive viajar) avança o relógio no custo definido.
@@ -76,13 +75,23 @@ Regras: T1
 Aceite: ao avançar o relógio, tudo que tem tempo (crescimento, eventos) é atualizado.
 Regras: T3
 
-**US-2.4** Como jogador, quero dormir para pular a noite.
-Aceite: ao dormir, o relógio avança até o início do dia seguinte e o que depende do tempo é atualizado.
-Regras: T4
+**US-2.4** Como jogador, quero dormir para pular a noite e acordar às 06:00.
+Aceite: ao dormir, o relógio avança até as 06:00 do dia seguinte e o que depende do tempo é atualizado.
+Regras: T4, T8
 
 **US-2.5** Como desenvolvedor, quero que o ritmo de crescimento de plantas e animais seja um dado, para ajustar a escala de tempo.
 Aceite: mudar o tempo de crescimento de uma planta ou animal não exige alterar código.
 Regras: T5, C6
+
+**US-2.6** Como jogador, quero que o dia termine à meia-noite, para ter um limite claro para as minhas ações.
+Aceite: às 00:00 o dia termina de forma inevitável, o jogador dorme e o que depende do fim do dia acontece.
+Regras: T7
+Depende: onde o jogador dorme se a meia-noite o pegar longe de casa.
+
+**US-2.7** Como jogador, quero acordar cansado se passei das 22:00 acordado, para o horário ter consequência.
+Aceite: se o relógio passou das 22:00 antes de eu dormir, acordo às 06:00 com o debuff de performance "cansado"; se dormi antes, não.
+Regras: T9
+Depende: efeito do debuff "cansado".
 
 ---
 
@@ -409,8 +418,8 @@ Regras: H1
 Aceite: o chão aceita qualquer quantidade, e as cartas continuam lá se eu voltar no mesmo dia.
 Regras: H2, H3
 
-**US-16.3** Como jogador, quero que o que sobrar no chão vá para o achados e perdidos no fim do dia, com um aviso no correio.
-Aceite: no fim do dia, as cartas do chão são movidas e chega uma mensagem avisando.
+**US-16.3** Como jogador, quero que o que sobrar no chão vá para o achados e perdidos na virada de dia, com um aviso no correio.
+Aceite: à meia-noite, as cartas do chão são movidas e chega uma mensagem avisando.
 Regras: H4
 
 **US-16.4** Como jogador, quero buscar no achados e perdidos da vila por até 7 dias.
@@ -423,7 +432,7 @@ Depende: a vila (suplementos).
 ## 17. Correio [depois]
 
 **US-17.1** Como jogador, quero uma caixa de correio com cartas de correspondência que chegam no início do dia.
-Aceite: toda manhã chegam cartas novas à caixa, que é um storage.
+Aceite: toda manhã, quando o jogador acorda, chegam cartas novas à caixa, que é um storage.
 Regras: M1, T6
 
 **US-17.2** Como jogador, quero ler uma carta ao clicar nela, sem gastar tempo.

@@ -24,9 +24,12 @@ Como ler:
 - T1. Toda ação gasta minutos.
 - T2. Existe um relógio global.
 - T3. Crescimento e eventos seguem o relógio.
-- T4. Dormir pula a noite.
+- T4. Dormir pula a noite: o relógio avança até as 06:00 do dia seguinte.
 - T5. Plantas crescem rápido, no estilo dos jogos de fazenda; animais seguem um ritmo mais realista (um ovo por dia). Ainda não definitivo.
-- T6. A correspondência chega sempre no início do dia.
+- T6. A correspondência chega sempre no início do dia, quando o jogador acorda (a confirmar).
+- T7. O dia termina à meia-noite (00:00), de forma inevitável. É a virada de dia, e o que depende do fim do dia acontece nela.
+- T8. O jogador acorda às 06:00.
+- T9. Se o jogador passar das 22:00 acordado, acorda com o debuff de performance "cansado".
 
 ## Dinheiro e dívidas [base]
 - D1. Itens são vendidos por dinheiro.
@@ -99,7 +102,7 @@ Como ler:
 - H1. Cartas novas (colheita, entregas) chegam ao chão do local (a stage), e o jogador escolhe onde ficam (a confirmar).
 - H2. O chão não tem limite de espaço.
 - H3. As cartas no chão continuam lá se o jogador voltar no mesmo dia.
-- H4. No fim do dia, o que está no chão vai para o achados e perdidos, com uma mensagem no correio.
+- H4. Na virada de dia (T7), o que está no chão vai para o achados e perdidos, com uma mensagem no correio.
 - H5. O achados e perdidos fica na vila (ver Q1 em `regras-suplementos.md`) e guarda os itens por 7 dias.
 
 ## Correio [depois]
@@ -143,7 +146,10 @@ Como ler:
 - Acesso aos locais: carta mapa ou lista à direita, escondível.
 - Gatilho e consequência da falência (F2).
 - Como o tempo se liga às dívidas (D6): juros por tempo ou só vencimentos.
-- Duração do dia e horário do relógio (ideia: 06:00 a 22:00).
+- Efeito do debuff "cansado" (tamanho e duração).
+- Onde o jogador dorme quando a meia-noite o pega longe de casa.
+- Se o jogador pode dormir antes das 22:00 e o que acontece com o resto do dia.
+- Se os prazos das contas e os juros (D6) usam a virada de dia.
 - Limites de peso da mochila e dos storages.
 - Efeito do debuff da mochila pesada.
 - Valores e frequência das contas.
