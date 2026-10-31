@@ -3,9 +3,11 @@
 Jogo de fazenda em cartas feito em Godot 4.x com GDScript. Projeto pessoal, gratuito.
 
 ## Antes de implementar qualquer mecânica
-Leia `regras.md`: regras curtas e numeradas (C2, T1, D5...), organizadas em [base], [depois] e [ideia]. Implemente só o que está em [base] sem pedido; [depois] e [ideia] não entram sem o desenvolvedor pedir. Detalhes sem decisão ficam em "Em aberto": pergunte em vez de decidir.
+Leia `regras-mecanica.md`: regras curtas e numeradas (C2, T1, D5...), organizadas em [base], [depois] e [ideia]. Implemente só o que está em [base] sem pedido; [depois] e [ideia] não entram sem o desenvolvedor pedir. Detalhes sem decisão ficam em "Em aberto": pergunte em vez de decidir.
 
-`jogo-fazenda-regras.md` é o registro bruto das conversas e ideias, usado como histórico. Quando houver conflito, `regras.md` vale.
+`regras-suplementos.md` reúne o conteúdo que se acrescenta por cima da mecânica (animais, construções, skills, veículos, maquinário). Não implemente nada de lá sem pedido. Os códigos das regras são únicos nos dois arquivos.
+
+`jogo-fazenda-regras.md` é o registro bruto das conversas e ideias, usado como histórico. Quando houver conflito, os arquivos de regras valem.
 
 ## Arquitetura
 - O motor de regras fica separado da interface: classes `RefCounted`, sem `Node`, cena ou UI.
