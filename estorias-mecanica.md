@@ -27,7 +27,11 @@ Regras: AR3
 **US-20.4** Como jogador, quero abrir um storage selecionando a carta dele, para ver o que guardei.
 Aceite: ao selecionar a carta de um storage, ele abre em cima, no lugar do local.
 Regras: AR4
-Depende: como fechar um storage aberto e voltar ao local.
+
+**US-20.12** Como jogador, quero que o ícone de um storage ou veículo aberto vá para a mão e, ao fechar, volte ao local, para saber o que está aberto e voltar fácil.
+Aceite: ao abrir, o ícone aberto aparece na área da mão. Ao fechar, a carta volta para o local.
+Regras: AR10, AR7
+Depende: se vale também para a mochila e como se fecha o storage.
 
 **US-20.5** Como jogador, quero o chão sempre disponível, para largar e pegar cartas a qualquer momento.
 Aceite: o chão aparece em qualquer visão.

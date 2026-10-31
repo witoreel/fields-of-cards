@@ -9,8 +9,8 @@ Etiquetas: **[base]** se implementa primeiro, **[depois]** vem em seguida.
 ## Primeiro momento
 
 ### 20. Áreas e movimentação de cartas [base]
-As cartas vivem em cinco áreas (mão, mochila, storage, local e stage, o chão), que não precisam estar visíveis ao mesmo tempo. A mão, talvez na lateral, guarda um ou dois itens segurados, a carta da mochila e, se houver, a carta do veículo, de acesso rápido. Selecionar a carta da mochila a abre embaixo, e clicar nela aberta a fecha. Selecionar a carta de um storage o abre em cima, no lugar do local. O chão está sempre disponível, e as cartas móveis passam de uma área aberta a outra. As cartas têm propriedades que se combinam (local, ferramenta, acumulável, móvel, inerente ao local, veículo) e podem ter buffs e debuffs. O núcleo é feito para evoluir e suportar as pendências futuras.
-Regras: AR1–AR9, C1, C7, C8, C9, L8, Z8
+As cartas vivem em cinco áreas (mão, mochila, storage, local e stage, o chão), que não precisam estar visíveis ao mesmo tempo. A mão, talvez na lateral, guarda um ou dois itens segurados, a carta da mochila e, se houver, a carta do veículo, de acesso rápido. Selecionar a carta da mochila a abre embaixo, e clicar nela aberta a fecha. Selecionar a carta de um storage o abre em cima, no lugar do local, e o ícone dele aberto vai para a mão; ao fechar, a carta volta para o local (o mesmo vale para o veículo). O chão está sempre disponível, e as cartas móveis passam de uma área aberta a outra. As cartas têm propriedades que se combinam (local, ferramenta, acumulável, móvel, inerente ao local, veículo) e podem ter buffs e debuffs. O núcleo é feito para evoluir e suportar as pendências futuras.
+Regras: AR1–AR10, C1, C7, C8, C9, L8, Z8
 
 ---
 
