@@ -12,8 +12,8 @@ Como ler:
 
 ## 20. Áreas e movimentação [base] - primeiro momento
 
-**US-20.1** Como jogador, quero ter quatro áreas de cartas (mochila, storage, local e stage), para organizar o que tenho.
-Aceite: as quatro áreas existem, e cada uma guarda cartas.
+**US-20.1** Como jogador, quero ter cinco áreas de cartas (mão, mochila, storage, local e stage), para organizar o que tenho.
+Aceite: as cinco áreas existem, e cada uma guarda cartas.
 Regras: AR1
 
 **US-20.2** Como jogador, quero ver só as áreas que abri, para a tela não ficar poluída.
@@ -21,14 +21,13 @@ Aceite: as áreas não precisam estar todas visíveis ao mesmo tempo.
 Regras: AR2
 
 **US-20.3** Como jogador, quero abrir a mochila selecionando a carta dela, para ver o que carrego.
-Aceite: ao selecionar a carta da mochila, a mochila abre embaixo.
+Aceite: a carta da mochila fica na área da mão, e ao selecioná-la a mochila abre embaixo.
 Regras: AR3
-Depende: onde fica a carta da mochila.
 
 **US-20.4** Como jogador, quero abrir um storage selecionando a carta dele, para ver o que guardei.
 Aceite: ao selecionar a carta de um storage, ele abre em cima, no lugar do local.
 Regras: AR4
-Depende: como fechar uma área aberta e voltar ao local.
+Depende: como fechar um storage aberto e voltar ao local.
 
 **US-20.5** Como jogador, quero o chão sempre disponível, para largar e pegar cartas a qualquer momento.
 Aceite: o chão aparece em qualquer visão.
@@ -45,6 +44,20 @@ Regras: C1, C9, Z8
 **US-20.8** Como jogador, quero que um veículo seja um local dentro de outro local.
 Aceite: um veículo é um local que tem uma localização dentro de outro local.
 Regras: L8
+
+**US-20.9** Como jogador, quero fechar a mochila clicando nela, para voltar à visão anterior.
+Aceite: clicar na mochila aberta a fecha.
+Regras: AR8
+
+**US-20.10** Como jogador, quero uma área da mão, talvez na lateral, com um ou dois itens que estou segurando e a carta da mochila, para ter à mão o que uso.
+Aceite: a área da mão mostra os itens segurados e a carta da mochila.
+Regras: AR7
+Depende: quantos itens cabem na mão, para que servem e se a lateral é a posição final.
+
+**US-20.11** Como jogador, quero deixar a carta do veículo na área da mão, para acessá-lo rápido.
+Aceite: a carta de um veículo pode ser colocada na área da mão e fica lá até ser movida.
+Regras: AR9, L8
+Depende: se a carta do veículo conta entre os itens segurados e como se abre ou fecha o veículo.
 
 ---
 

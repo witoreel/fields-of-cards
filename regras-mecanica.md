@@ -13,12 +13,15 @@ Como ler:
 ---
 
 ## Áreas e movimentação [base] - primeiro momento
-- AR1. As áreas de cartas são: mochila, storage, local e stage (o chão).
+- AR1. As áreas de cartas são: mão, mochila, storage, local e stage (o chão).
 - AR2. As áreas não precisam estar todas visíveis ao mesmo tempo.
-- AR3. Selecionar a carta da mochila abre a mochila embaixo.
+- AR3. Selecionar a carta da mochila, que fica na área da mão, abre a mochila embaixo.
 - AR4. Selecionar a carta de um storage abre o storage em cima, no lugar do local.
 - AR5. O chão está sempre disponível.
 - AR6. Cartas móveis podem ser movidas entre as áreas abertas.
+- AR7. A área da mão, talvez na lateral, guarda os itens que o jogador segura (um ou dois) e a carta da mochila.
+- AR8. Clicar na mochila aberta a fecha.
+- AR9. O veículo pode ficar como carta na área da mão, de acesso rápido.
 
 ## Cartas [base]
 - C1. Uma carta pode ser: local, ferramenta, acumulável, móvel, inerente ao local (não móvel) ou veículo. Essas propriedades se combinam.
@@ -185,7 +188,9 @@ Como ler:
 - Como consertar a enxada enferrujada, o regador furado e a roça danificada, e se os status e a manutenção entram na base, já que o estado inicial os usa.
 - Se o container de venda em lote e a caixa de venda na fazenda (E3) são a mesma coisa, e quando ele paga.
 - Para onde vai o item anexo de uma carta lida (mochila ou chão).
-- Onde fica a carta da mochila (sempre visível ou dentro do local).
-- Como fechar uma área aberta e voltar à visão do local.
+- Como fechar um storage aberto e voltar à visão do local (a mochila fecha clicando nela, AR8).
+- Quantos itens cabem na mão (um ou dois), para que servem e se contam no peso carregado.
+- Se a área da mão fica mesmo na lateral.
+- Se a carta do veículo na mão conta entre os itens segurados (um ou dois) e como se abre ou fecha o veículo (L8).
 - Relação entre os status das cartas e os buffs e debuffs (ver `pendencias-futuras.md`).
 - Clima, estações.
