@@ -7,6 +7,8 @@ Leia `regras-mecanica.md`: regras curtas e numeradas (C2, T1, D5...), organizada
 
 `regras-suplementos.md` reúne o conteúdo que se acrescenta por cima da mecânica (animais, construções, skills, veículos, maquinário). Não implemente nada de lá sem pedido. Os códigos das regras são únicos nos dois arquivos.
 
+`features-mecanica.md` resume as features globais da mecânica e aponta as regras de cada uma pelos códigos. Use-o como mapa para saber o que depende de quê.
+
 `jogo-fazenda-regras.md` é o registro bruto das conversas e ideias, usado como histórico. Quando houver conflito, os arquivos de regras valem.
 
 ## Arquitetura
