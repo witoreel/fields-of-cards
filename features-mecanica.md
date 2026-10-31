@@ -6,6 +6,14 @@ Etiquetas: **[base]** se implementa primeiro, **[depois]** vem em seguida.
 
 ---
 
+## Primeiro momento
+
+### 20. Áreas e movimentação de cartas [base]
+As cartas vivem em quatro áreas (mochila, storage, local e stage, o chão), que não precisam estar visíveis ao mesmo tempo. Selecionar a carta da mochila a abre embaixo, e selecionar a carta de um storage o abre em cima, no lugar do local. O chão está sempre disponível, e as cartas móveis passam de uma área aberta a outra. As cartas têm propriedades que se combinam (local, ferramenta, acumulável, móvel, inerente ao local, veículo) e podem ter buffs e debuffs. O núcleo é feito para evoluir e suportar as pendências futuras.
+Regras: AR1–AR6, C1, C7, C8, C9, L8, Z8
+
+---
+
 ## Núcleo
 
 ### 1. Receitas por arrastar [base]
@@ -65,7 +73,7 @@ Ferramentas têm durabilidade que cai com o uso, sem quebrar: quanto menor, mais
 Regras: G1, G2, G3, G4, G5, G6
 
 ### 14. Status de cartas [depois]
-Cartas têm status próprios (sujo, molhado, enferrujado), separados dos buffs e debuffs do jogador.
+Cartas têm status (sujo, molhado, enferrujado) e também podem ter buffs e debuffs. A relação entre os dois é uma pendência futura.
 Regras: S1, S2
 
 ### 15. Buffs e debuffs [depois]

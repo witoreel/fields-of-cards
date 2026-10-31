@@ -12,13 +12,24 @@ Como ler:
 
 ---
 
+## Áreas e movimentação [base] - primeiro momento
+- AR1. As áreas de cartas são: mochila, storage, local e stage (o chão).
+- AR2. As áreas não precisam estar todas visíveis ao mesmo tempo.
+- AR3. Selecionar a carta da mochila abre a mochila embaixo.
+- AR4. Selecionar a carta de um storage abre o storage em cima, no lugar do local.
+- AR5. O chão está sempre disponível.
+- AR6. Cartas móveis podem ser movidas entre as áreas abertas.
+
 ## Cartas [base]
-- C1. Há três tipos de carta: local, ferramenta e item.
+- C1. Uma carta pode ser: local, ferramenta, acumulável, móvel, inerente ao local (não móvel) ou veículo. Essas propriedades se combinam.
 - C2. Arrastar uma carta sobre outra executa uma receita (A + B = C), se existir.
 - C3. Uma receita define: cartas de entrada, resultado, custo em minutos e se a ferramenta é consumida ou só perde durabilidade.
-- C4. Cartas iguais que chegam ao mesmo destino se somam, com um sinal visual.
+- C4. Cartas acumuláveis iguais que chegam ao mesmo destino se somam, com um sinal visual.
 - C5. A ordem das cartas em cada área (local, storage, mochila) pode ser reordenada e é preservada.
 - C6. Conteúdo novo (carta, receita) é dado, não código.
+- C7. Uma carta móvel pode ser carregada e movida entre áreas.
+- C8. Uma carta inerente ao local não é móvel.
+- C9. Cartas podem ter buffs e debuffs.
 
 ## Tempo [base]
 - T1. Toda ação gasta minutos, ainda que o custo seja zero. Os valores são balanceados depois.
@@ -57,6 +68,7 @@ Como ler:
 - L5. A ferragem é uma das lojas (ferramentas e materiais).
 - L6. Dentro da fazenda ficam: casa, sheds, galinheiro, celeiro e roças (farmlands). Os construídos têm nome.
 - L7. A fazenda tem área em m², um limite global somando todos os locais.
+- L8. Um veículo é um local que tem uma localização dentro de outro local.
 
 ## Recursos nos locais [base]
 - N1. Terra bruta, árvores e água de riacho são infinitas.
@@ -101,7 +113,7 @@ Como ler:
 
 ## Status e modificadores [depois]
 - S1. Cartas têm status próprios: sujo, molhado, enferrujado, entre outros.
-- S2. Status são diferentes dos buffs e debuffs do jogador.
+- S2. Além de status, as cartas podem ter buffs e debuffs (C9). A relação entre os dois é uma pendência futura.
 - S3. Alimentos geram buffs.
 - S4. Construção danificada gera debuff no seu multiplicador.
 
@@ -138,6 +150,7 @@ Como ler:
 - Z5. Testes unitários com GUT ou gdUnit4.
 - Z6. Simulação longa em modo headless com bots e métricas (dias até falir, saldo médio, taxa de atraso).
 - Z7. Balanceamento inicial com métricas reais de peso, capacidade e energia, ajustado depois para ser divertido. Tempos de cultivo são comprimidos.
+- Z8. O núcleo de cartas e áreas é feito para evoluir: propriedades de carta e áreas são dados extensíveis, para suportar os sistemas de `pendencias-futuras.md` sem reescrever.
 
 ## Fluidez e conforto [base]
 - W1. Fluido a 180 Hz. O desenvolvedor tem motion sickness.
@@ -172,4 +185,7 @@ Como ler:
 - Como consertar a enxada enferrujada, o regador furado e a roça danificada, e se os status e a manutenção entram na base, já que o estado inicial os usa.
 - Se o container de venda em lote e a caixa de venda na fazenda (E3) são a mesma coisa, e quando ele paga.
 - Para onde vai o item anexo de uma carta lida (mochila ou chão).
+- Onde fica a carta da mochila (sempre visível ou dentro do local).
+- Como fechar uma área aberta e voltar à visão do local.
+- Relação entre os status das cartas e os buffs e debuffs (ver `pendencias-futuras.md`).
 - Clima, estações.

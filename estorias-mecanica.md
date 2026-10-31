@@ -10,6 +10,44 @@ Como ler:
 
 ---
 
+## 20. Áreas e movimentação [base] - primeiro momento
+
+**US-20.1** Como jogador, quero ter quatro áreas de cartas (mochila, storage, local e stage), para organizar o que tenho.
+Aceite: as quatro áreas existem, e cada uma guarda cartas.
+Regras: AR1
+
+**US-20.2** Como jogador, quero ver só as áreas que abri, para a tela não ficar poluída.
+Aceite: as áreas não precisam estar todas visíveis ao mesmo tempo.
+Regras: AR2
+
+**US-20.3** Como jogador, quero abrir a mochila selecionando a carta dela, para ver o que carrego.
+Aceite: ao selecionar a carta da mochila, a mochila abre embaixo.
+Regras: AR3
+Depende: onde fica a carta da mochila.
+
+**US-20.4** Como jogador, quero abrir um storage selecionando a carta dele, para ver o que guardei.
+Aceite: ao selecionar a carta de um storage, ele abre em cima, no lugar do local.
+Regras: AR4
+Depende: como fechar uma área aberta e voltar ao local.
+
+**US-20.5** Como jogador, quero o chão sempre disponível, para largar e pegar cartas a qualquer momento.
+Aceite: o chão aparece em qualquer visão.
+Regras: AR5
+
+**US-20.6** Como jogador, quero mover cartas móveis entre as áreas abertas, para organizar o que carrego, guardo e deixo no chão.
+Aceite: arrastar uma carta móvel de uma área aberta para outra a move; uma carta inerente ao local não se move.
+Regras: AR6, C7, C8
+
+**US-20.7** Como desenvolvedor, quero que as cartas tenham propriedades que se combinam (local, ferramenta, acumulável, móvel, inerente ao local, veículo) e possam ter buffs e debuffs, para o núcleo suportar sistemas novos sem reescrever.
+Aceite: acrescentar uma propriedade ou um buff a uma carta é uma mudança em dados, sem alterar o mecanismo das áreas.
+Regras: C1, C9, Z8
+
+**US-20.8** Como jogador, quero que um veículo seja um local dentro de outro local.
+Aceite: um veículo é um local que tem uma localização dentro de outro local.
+Regras: L8
+
+---
+
 ## 1. Receitas por arrastar [base]
 
 **US-1.1** Como jogador, quero arrastar uma carta sobre outra para executar uma receita.
@@ -97,8 +135,8 @@ Depende: efeito do debuff "cansado".
 
 ## 3. Cartas, áreas e ordem [base]
 
-**US-3.1** Como jogador, quero distinguir cartas de local, de ferramenta e de item, para saber o que posso fazer com cada uma.
-Aceite: cada carta mostra claramente o seu tipo.
+**US-3.1** Como jogador, quero distinguir as propriedades de cada carta (local, ferramenta, acumulável, móvel, inerente ao local, veículo), para saber o que posso fazer com ela.
+Aceite: cada carta mostra claramente as suas propriedades.
 Regras: C1
 
 **US-3.2** Como jogador, quero que cada local mostre a sua própria área de cartas.
@@ -388,9 +426,9 @@ Regras: G6
 Aceite: a carta mostra os seus status.
 Regras: S1
 
-**US-14.2** Como desenvolvedor, quero os status das cartas separados dos buffs e debuffs do jogador.
-Aceite: os dois são modelados à parte e não se misturam.
-Regras: S2
+**US-14.2** Como desenvolvedor, quero que as cartas possam ter buffs e debuffs além de status, para uma construção danificada ou outra carta ser afetada.
+Aceite: uma carta pode receber um buff ou um debuff, além dos seus status.
+Regras: S2, C9
 
 ---
 

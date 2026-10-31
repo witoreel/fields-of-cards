@@ -11,6 +11,8 @@ Leia `regras-mecanica.md`: regras curtas e numeradas (C2, T1, D5...), organizada
 
 `estorias-mecanica.md` quebra cada feature em estórias pequenas (US-1.1, US-2.3...), com aceite e regras. Trabalhe uma estória por vez, na ordem de [base]. Onde a estória tem "Depende", pergunte ao desenvolvedor antes de decidir.
 
+Primeiro momento: a feature 20 (áreas e movimentação de cartas). Faça o núcleo de cartas e áreas de modo que as pendências de `pendencias-futuras.md` possam ser acrescentadas depois sem reescrever. Não implemente as pendências sem pedido.
+
 `jogo-fazenda-regras.md` é o registro bruto das conversas e ideias, usado como histórico. Quando houver conflito, os arquivos de regras valem.
 
 ## Arquitetura
