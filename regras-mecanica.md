@@ -45,6 +45,7 @@ Como ler:
 - T7. O dia termina à meia-noite (00:00), de forma inevitável. É a virada de dia, e o que depende do fim do dia acontece nela.
 - T8. O jogador acorda às 06:00.
 - T9. Se o jogador passar das 22:00 acordado, acorda com o debuff de performance "cansado".
+- T10. No primeiro momento não há relógio: as ações não gastam tempo e o estado não guarda hora. Os tempos de T1 a T9 entram quando o relógio entrar.
 
 ## Dinheiro e dívidas [base]
 - D1. Itens são vendidos por dinheiro.
@@ -219,7 +220,6 @@ Como ler:
 - Se a carta do veículo na mão conta entre os itens segurados (um ou dois) e como se abre ou fecha o veículo (L8).
 - Relação entre os status das cartas e os buffs e debuffs (ver `pendencias-futuras.md`).
 - Clima, estações.
-- Quanto tempo gasta andar entre locais (T1). Hoje é zero, porque ainda não há relógio.
 - Se o jogo também salva ao iniciar um jogo novo, ao dormir e na virada de dia, e se haverá mais de um save (SV3).
 - O que fazer com "Iniciar jogo" quando já existe um save (hoje o save antigo só é trocado no primeiro autosave).
 - Se o menu inicial ganha "Sair" (hoje há "Iniciar jogo", "Configurações" e, com save, "Continuar").

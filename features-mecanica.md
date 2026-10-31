@@ -30,7 +30,7 @@ Regras: C2, C3, C6, R1–R7, R9
 
 ### 2. Relógio e dia [base]
 Toda ação gasta minutos, ainda que o custo seja zero, e o crescimento e os eventos seguem um relógio global. O dia termina à meia-noite, e o jogador acorda às 06:00. Passar das 22:00 acordado gera o debuff "cansado". Plantas crescem rápido e animais em ritmo mais realista (ainda não definitivo).
-Regras: T1–T5, T7, T8, T9
+Regras: T1–T5, T7–T10
 
 ### 3. Cartas, áreas e ordem [base]
 Cartas pertencem a áreas (local, storage, mochila), podem ser reordenadas e a ordem é preservada. Cartas iguais que chegam ao mesmo destino se somam, com sinal visual.

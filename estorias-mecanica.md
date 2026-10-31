@@ -168,6 +168,10 @@ Regras: R7
 
 ## 2. Relógio e dia [base]
 
+**US-2.0** Como desenvolvedor, quero que o primeiro momento rode sem relógio, para focar nas áreas e no movimento das cartas.
+Aceite: as ações não gastam tempo e o estado não guarda hora, até as estórias seguintes desta feature entrarem.
+Regras: T10
+
 **US-2.1** Como jogador, quero ver a hora do dia, para planejar minhas ações.
 Aceite: o relógio global aparece na tela e mostra o horário atual.
 Regras: T2
