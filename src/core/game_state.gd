@@ -89,6 +89,11 @@ var next_uid := 1
 var last_stacked_uid := 0
 var rng := RandomNumberGenerator.new()
 var catalog: CardCatalog = CardCatalog.default()
+var recipes: RecipeCatalog = RecipeCatalog.default()
+
+
+func _init() -> void:
+	day_ended.connect(func(_day: int) -> void: Farming.on_day_end(self))
 
 
 static func new_game(seed_value: int = 0) -> GameState:
@@ -322,7 +327,31 @@ func spawn(id: StringName, area: StringName, n: int = 1) -> Dictionary:
 func cards_match(a: Dictionary, b: Dictionary) -> bool:
 	if a["id"] != b["id"] or not has_prop(a, &"stackable"):
 		return false
-	return a.get("props", []) == b.get("props", []) and a.get("buffs", []) == b.get("buffs", [])
+	return _identity(a) == _identity(b)
+
+
+## O que distingue uma carta além de uid e quantidade: id, propriedades,
+## buffs e estado (um estágio de plantio diferente é outra carta).
+func _identity(c: Dictionary) -> Dictionary:
+	var d := c.duplicate()
+	d.erase("uid")
+	d.erase("n")
+	return d
+
+
+## Junta as cartas iguais de uma lista, mantendo a ordem da primeira de cada.
+func restack(list: Array) -> void:
+	var out: Array = []
+	for c in list:
+		var merged := false
+		for o in out:
+			if cards_match(o, c):
+				o["n"] = int(o["n"]) + int(c["n"])
+				merged = true
+				break
+		if not merged:
+			out.append(c)
+	list.assign(out)
 
 
 ## Soma `card` à primeira carta igual de `list`. Devolve a carta que recebeu
@@ -438,6 +467,64 @@ func move_card(uid: int, to_area: StringName, index: int = -1) -> bool:
 	return true
 
 
+# --- Receitas -------------------------------------------------------------
+
+## Comando: arrasta a carta `a_uid` sobre `b_uid` (C2). Se existe receita para
+## o par (em qualquer ordem), executa; senão, nada muda. Devolve se executou.
+func apply_recipe(a_uid: int, b_uid: int) -> bool:
+	var la := find_card(a_uid)
+	var lb := find_card(b_uid)
+	if la.is_empty() or lb.is_empty() or a_uid == b_uid:
+		return false
+	var ca: Dictionary = area_cards(la["area"])[la["index"]]
+	var cb: Dictionary = area_cards(lb["area"])[lb["index"]]
+	var r := recipes.find(StringName(ca["id"]), StringName(cb["id"]))
+	if r != null:
+		return _run(r, ca, cb, lb["area"])
+	r = recipes.find(StringName(cb["id"]), StringName(ca["id"]))
+	if r != null:
+		return _run(r, cb, ca, la["area"])
+	return false
+
+
+## Comando: usa uma carta sozinha (receita de clique, como colher).
+func use_card(uid: int) -> bool:
+	var l := find_card(uid)
+	if l.is_empty():
+		return false
+	var card: Dictionary = area_cards(l["area"])[l["index"]]
+	var r := recipes.find(&"", StringName(card["id"]))
+	return r != null and _run(r, {}, card, l["area"])
+
+
+func _run(r: RecipeDef, a: Dictionary, b: Dictionary, area_b: StringName) -> bool:
+	if (r.a_use > 0 and int(a["n"]) < r.a_use) or (r.b_use > 0 and int(b["n"]) < r.b_use):
+		return false
+	if r.a_use > 0:
+		_consume(a, r.a_use)
+	if r.b_use > 0:
+		_consume(b, r.b_use)
+	if not r.set_state_b.is_empty() and r.b_use == 0:
+		var st: Dictionary = b.get("state", {}).duplicate()
+		st.merge(r.set_state_b, true)
+		b["state"] = st
+		# A carta mudou de identidade: pode precisar somar ou separar.
+		restack(area_cards(area_b))
+	for res in r.results:
+		spawn(StringName(res["id"]), area_b, int(res.get("n", 1)))
+	advance_time(r.minutes) # T1
+	areas_changed.emit()
+	return true
+
+
+func _consume(card: Dictionary, amount: int) -> void:
+	card["n"] = int(card["n"]) - amount
+	if card["n"] <= 0:
+		var l := find_card(int(card["uid"]))
+		if not l.is_empty():
+			area_cards(l["area"]).remove_at(l["index"])
+
+
 # --- Abrir e fechar -------------------------------------------------------
 
 ## Comando: seleciona uma carta. A mochila abre/fecha (AR3, AR8), um storage
@@ -467,7 +554,7 @@ func select_card(uid: int) -> bool:
 		open_storage_uid = int(c["uid"])
 		areas_changed.emit()
 		return true
-	return false
+	return use_card(uid)
 
 
 func _close_storage_internal() -> void:

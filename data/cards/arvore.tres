@@ -8,3 +8,4 @@ id = &"arvore"
 display_name = "Árvore"
 props = PackedStringArray("fixed")
 weight = 0
+extra = {}

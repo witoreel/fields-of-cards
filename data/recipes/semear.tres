@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RecipeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/recipe_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"semear"
+a = &"semente"
+b = &"terra_arada"
+a_use = 1
+b_use = 1
+minutes = 10
+results = [{"id": "terra_semeada", "n": 1}]
+set_state_b = {}
