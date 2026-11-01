@@ -71,7 +71,8 @@ Como ler:
 - L3. Itens passam de um local a outro pela mochila.
 - L4. Locais do jogo: fazenda (com a casa dentro), floresta e cidade. Lojas e feira ficam dentro da cidade.
 - L5. A ferragem é uma das lojas (ferramentas e materiais).
-- L6. Dentro da fazenda ficam: casa, sheds, galinheiro, celeiro e roças (farmlands). Os construídos têm nome.
+- L6. Dentro da fazenda ficam: casa, açude, sheds, galinheiro, celeiro e roças (farmlands). Os construídos têm nome.
+- L9. O açude é um local da fazenda, a 10 minutos a pé de qualquer outro local dela (ida e volta). Sua água enche o regador (provisório; ver P5).
 - L7. A fazenda tem área em m², um limite global somando todos os locais.
 - L8. Um veículo é um local que tem uma localização dentro de outro local.
 
@@ -97,7 +98,7 @@ Como ler:
 - F3. Ideia: dívida alta traz a polícia, que prende o jogador, e as coisas estragam na fazenda.
 
 ## Estado inicial [base]
-- I1. O jogo começa com uma enxada enferrujada, um regador furado e um pouco de dinheiro.
+- I1. O jogo começa com uma enxada enferrujada, um regador furado e vazio e um pouco de dinheiro. Não há torneira no início.
 - I2. A roça inicial começa danificada, precisando de manutenção.
 - I3. Uma mensagem de boas-vindas no correio traz algumas sementes como item anexo.
 

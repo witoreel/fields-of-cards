@@ -2,12 +2,12 @@
 	"hand": [
 		{"id": "mochila"},
 		{"id": "enxada", "state": {"status": ["enferrujada"]}},
-		{"id": "regador", "state": {"status": ["furado"]}},
+		{"id": "regador", "state": {"status": ["furado"], "volume": 0}},
 		{"id": "dinheiro", "n": 100}
 	],
 	"locations": {
 		"fazenda": [
-			{"id": "caixa_venda"}, {"id": "torneira"},
+			{"id": "caixa_venda"},
 			{"id": "caixa_correio", "contents": [
 				{"id": "carta", "state": {"title": "Bem-vindo à fazenda",
 				 "text": "Aqui estão algumas sementes para começar.",
@@ -15,6 +15,7 @@
 			]}
 		],
 		"floresta": [{"id": "arvore"}],
+		"acude": [{"id": "agua_acude"}],
 		"feira": [{"id": "banca_feira"}]
 	},
 	"new_locations": [

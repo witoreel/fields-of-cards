@@ -38,7 +38,19 @@ func _read_mail(state: GameState) -> void:
 	state.select_card(box["uid"]) # fecha
 
 
+func _fill_water(state: GameState) -> void:
+	var pot := _find(state, "regador")
+	if pot.is_empty() or state.volume_of(pot) > 0:
+		return
+	state.travel_to(&"acude") # 10 min a pé
+	pot = _find(state, "regador")
+	var water := _find(state, "agua_acude")
+	if not pot.is_empty() and not water.is_empty():
+		state.apply_recipe(pot["uid"], water["uid"])
+
+
 func _farm(state: GameState) -> void:
+	_fill_water(state)
 	state.travel_to(&"roca")
 	var hoe := _find(state, "enxada")
 	var soil := _find(state, "terra_bruta")

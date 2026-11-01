@@ -51,6 +51,13 @@ func _initialize() -> void:
 	s.travel_to(&"floresta")
 	_check(s.stages["floresta"].size() == 1, "largado fica no chão da floresta")
 
+	# Açude: local da fazenda, 10 min a pé de qualquer outro local dela
+	_check(s.parent_of(&"acude") == &"fazenda" and s.travel_minutes(&"fazenda", &"acude") == 10, "açude na fazenda, a 10 min")
+	_check(s.travel_minutes(&"casa", &"acude") == 10 and s.travel_minutes(&"acude", &"casa") == 10, "da casa ao açude e de volta: 10 min")
+	_check(s.travel_minutes(&"casa", &"fazenda") == 0, "dentro da sede continua sem custo")
+	s.travel_to(&"fazenda")
+	_check(s.destinations().has(&"acude"), "o açude aparece no mapa da fazenda")
+
 	# US-4.6: construído com nome, dentro da fazenda
 	_check(s.add_location(&"galinheiro_1", "Galinheiro do Zé", &"fazenda"), "cria galinheiro com nome")
 	s.travel_to(&"fazenda")

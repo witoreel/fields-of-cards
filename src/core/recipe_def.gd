@@ -43,3 +43,6 @@ extends Resource
 ## Soma (ou subtrai) valores nos medidores da carta alvo, como {"food": 40}
 ## (animais, A2). Os medidores de 0 a 100 não passam dos limites.
 @export var b_meter_add: Dictionary = {}
+
+## Enche a carta `a` até a capacidade (extra["capacity"]): o regador na fonte (P5).
+@export var a_fill_volume: bool = false

@@ -72,6 +72,12 @@ static func run(state: GameState, r: RecipeDef, a: Dictionary, b: Dictionary, ar
 		a["state"]["volume"] = state.volume_of(a) - water_needed
 	if fuel_needed > 0:
 		Machines.spend_fuel(a, fuel_needed)
+	if r.a_fill_volume:
+		var cap := int(state.def_of(a).extra.get("capacity", 0)) if state.def_of(a) != null else 0
+		if cap <= 0 or state.volume_of(a) >= cap:
+			return false # não é um recipiente, ou já está cheio
+		a["state"] = a.get("state", {}).duplicate()
+		a["state"]["volume"] = cap
 	var factor := Wear.time_factor(state, a) * state.buff_multiplier("time_mult")
 	# Estados da ferramenta e do alvo que a receita muda (S1, G1, G4).
 	Wear.apply_use(state, a, r.a_wear * units, r.a_edge_wear * units)

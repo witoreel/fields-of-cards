@@ -23,7 +23,7 @@ Registro do que está implementado, do que ficou de fora e das decisões que tom
 - **US-13.6 / G6** (tiers de ferramenta): só existe o campo `quality`; não há tiers prontos.
 - **US-12.5 / E2** (aluguel da banca na feira): a banca existe com multiplicador 1,3, sem aluguel nem limite de cartas.
 - **US-25.3 / K4** (porcentagem de chance): mostra só o nível de skill.
-- **US-1.7 / P5** (reabastecer o regador): não há como encher o regador; na simulação isso é suposto (`refill_water`).
+- **US-1.7 / P5**: o regador começa vazio e se enche com a água do açude (provisório; o bot da simulação faz isso). Quanto cada m² precisa continua em aberto.
 - **US-26.2**: o preço da pousada (30) é um palpite. **US-23.3**: a água dos animais não existe, só comida.
 - **AR9/AR10** (abrir o veículo da mão): o depósito do veículo só abre com a carta no local ou no chão.
 - Interface: segue o layout do `mockup/tela-jogo.html` (Local em cima, Mochila embaixo, Mão à esquerda, contexto à direita, Chão no centro, dock de ícones). Ao arrastar, uma cópia da carta acompanha o mouse; soltar sobre outra carta mostra contorno amarelo se houver receita. As observações do desenvolvedor estão em `observacoes.md`. Os diálogos e a tela não foram vistos por mim em execução.

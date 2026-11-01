@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"agua_acude"
+display_name = "Água do açude"
+props = PackedStringArray("fixed")
+weight = 0
+extra = {}

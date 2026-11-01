@@ -4,7 +4,7 @@ extends RefCounted
 ## mesma configuração dão o mesmo resultado (Z4). Os valores padrão são
 ## suposições de simulação, não regras do jogo: valores e frequência das
 ## contas estão em aberto, e a água do regador e as sementes ainda não têm
-## fonte no jogo (ver "Em aberto").
+## fonte no jogo (ver "Em aberto"). O bot enche o regador no açude.
 
 const DEFAULTS := {
 	"days": 60,
@@ -15,7 +15,7 @@ const DEFAULTS := {
 	"diligence": 0.7,
 	"bankruptcy_debt_limit": 150,
 	"daily_seeds": 4, # suposição: sementes que chegam por dia
-	"refill_water": true, # suposição: o regador enche todo dia (riacho)
+	"refill_water": false, # suposição opcional: o regador enche sozinho todo dia
 }
 
 

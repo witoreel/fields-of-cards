@@ -17,6 +17,8 @@ func _initialize() -> void:
 	var pot: Dictionary = s.hand.filter(func(c: Dictionary) -> bool: return c["id"] == "regador")[0]
 	_check(hoe["state"]["status"] == ["enferrujada"], "enxada enferrujada")
 	_check(pot["state"]["status"] == ["furado"], "regador furado")
+	_check(s.volume_of(pot) == 0, "regador começa vazio")
+	_check(not s.cards_at(&"fazenda").any(func(c: Dictionary) -> bool: return c["id"] == "torneira"), "sem torneira no início")
 	_check(s.money() > 0, "começa com dinheiro (%d)" % s.money())
 	_check(s.def_of(s.hand[0]).id == &"mochila", "a mochila é a primeira carta da mão")
 	_check(s.current_location == &"fazenda" and s.minutes == 360, "fazenda, 06:00")
@@ -48,6 +50,17 @@ func _initialize() -> void:
 	var plowed: Dictionary = s.cards_at(&"roca").filter(func(c: Dictionary) -> bool: return c["id"] == "terra_arada")[0]
 	_check(s.apply_recipe(seeds["uid"], plowed["uid"]), "semear")
 	var sown: Dictionary = s.cards_at(&"roca").filter(func(c: Dictionary) -> bool: return c["id"] == "terra_semeada")[0]
+	_check(not s.apply_recipe(pot["uid"], sown["uid"]), "regador vazio não rega")
+	# O açude: 10 min a pé, e a água enche o regador
+	var t0 := s.minutes
+	s.travel_to(&"acude")
+	_check(s.minutes - t0 == 10 and s.current_location == &"acude", "ir ao açude custa 10 min")
+	var water: Dictionary = s.cards_at(&"acude")[0]
+	_check(s.apply_recipe(pot["uid"], water["uid"]) and s.volume_of(pot) == 2000, "encheu o regador na água do açude")
+	_check(not s.apply_recipe(pot["uid"], water["uid"]), "cheio, não enche de novo")
+	t0 = s.minutes
+	s.travel_to(&"roca")
+	_check(s.minutes - t0 == 10, "voltar do açude também custa 10 min")
 	_check(s.apply_recipe(pot["uid"], sown["uid"]), "regar")
 	s.sleep()
 	_check(sown["id"] == "terra_broto", "cresceu durante a noite")

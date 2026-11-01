@@ -26,6 +26,7 @@ const LOCATION_NAMES := {
 	&"vila": "Vila",
 	&"cidade_grande": "Cidade grande",
 	&"casa": "Casa",
+	&"acude": "Açude",
 	&"ferragem": "Ferragem",
 	&"feira": "Feira",
 }
@@ -33,6 +34,7 @@ const LOCATION_NAMES := {
 ## A casa fica dentro da fazenda; as lojas e a feira, dentro da cidade.
 const LOCATION_PARENTS := {
 	&"casa": &"fazenda",
+	&"acude": &"fazenda",
 	&"ferragem": &"cidade",
 	&"feira": &"cidade",
 }
@@ -99,6 +101,11 @@ const TRAVEL_MINUTES := {
 	&"floresta|cidade_grande": 270,
 	&"vila|cidade_grande": 225,
 	&"cidade|cidade_grande": 180,
+}
+## Locais dentro da fazenda que ficam longe da sede: ir até eles ou vir deles
+## custa estes minutos a pé, mesmo sendo da mesma raiz (L6). Provisório.
+const WALK_MINUTES := {
+	&"acude": 10,
 }
 ## Locais que só se alcança com veículo (Q3).
 const NEEDS_VEHICLE: Array[StringName] = [&"cidade_grande"]
@@ -302,7 +309,9 @@ func travel_minutes(from: StringName, to: StringName) -> int:
 	var a := root_of(from)
 	var b := root_of(to)
 	if a == b:
-		return 0
+		if from == to:
+			return 0
+		return maxi(int(WALK_MINUTES.get(from, 0)), int(WALK_MINUTES.get(to, 0)))
 	var key := StringName("%s|%s" % [a, b])
 	var rkey := StringName("%s|%s" % [b, a])
 	return int(TRAVEL_MINUTES.get(key, TRAVEL_MINUTES.get(rkey, 0)))
