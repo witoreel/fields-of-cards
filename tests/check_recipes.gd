@@ -69,18 +69,18 @@ func _initialize() -> void:
 
 	# US-1.9: colher
 	_check(s.use_card(sown["uid"]), "colher")
-	_check(_count(s.cards_at(&"fazenda"), "colheita") == 1 and sown["n"] == 2, "1 colheita, 2 m² prontos")
+	_check(_count(s.stages["fazenda"], "colheita") == 1 and sown["n"] == 2, "1 colheita, 2 m² prontos")
 	_check(_count(s.cards_at(&"fazenda"), "terra_arada") == 6, "o m² colhido volta a ser terra arada")
 	s.select_card(sown["uid"]) # clique na carta também colhe
 	s.select_card(sown["uid"])
-	_check(_count(s.cards_at(&"fazenda"), "colheita") == 3 and _count(s.cards_at(&"fazenda"), "terra_pronta") == 0, "colheu tudo")
+	_check(_count(s.stages["fazenda"], "colheita") == 3 and _count(s.cards_at(&"fazenda"), "terra_pronta") == 0, "colheu tudo")
 
 	# Estágios diferentes somam por estágio (um estágio é uma carta)
 	var a := s.spawn(&"terra_semeada", GameState.STAGE, 2)
 	var b := s.spawn(&"terra_semeada", GameState.STAGE, 1)
 	_check(a["uid"] == b["uid"] and a["n"] == 3, "mesmo estágio soma")
 	s.spawn(&"terra_broto", GameState.STAGE, 1)
-	_check(s.stages["fazenda"].size() == 2, "estágio diferente é outra carta")
+	_check(s.stages["fazenda"].filter(func(c: Dictionary) -> bool: return c["id"].begins_with("terra_")).size() == 2, "estágio diferente é outra carta")
 	# Rega só nos regados: uma parte regada, outra não, depois de somar
 	s.spawn(&"terra_semeada", GameState.LOCATION)
 
@@ -90,13 +90,13 @@ func _initialize() -> void:
 	var axe := s.spawn(&"machado", GameState.HAND)
 	var saw := s.spawn(&"serrote", GameState.HAND)
 	_check(s.apply_recipe(axe["uid"], tree["uid"]) and s.apply_recipe(saw["uid"], tree["uid"]), "machado e serrote cortam")
-	_check(_count(s.cards_at(&"floresta"), "madeira") == 2 and s.cards_at(&"floresta").has(tree), "2 madeiras e a árvore continua")
+	_check(_count(s.stages["floresta"], "madeira") == 2 and s.cards_at(&"floresta").has(tree), "2 madeiras e a árvore continua")
 
 	# US-1.11: construir com martelo + madeira
 	var hammer := s.spawn(&"martelo", GameState.HAND)
-	var wood: Dictionary = s.cards_at(&"floresta").filter(func(c: Dictionary) -> bool: return c["id"] == "madeira")[0]
+	var wood: Dictionary = s.stages["floresta"].filter(func(c: Dictionary) -> bool: return c["id"] == "madeira")[0]
 	_check(s.apply_recipe(hammer["uid"], wood["uid"]), "construir")
-	_check(wood["n"] == 1 and _count(s.cards_at(&"floresta"), "construcao") == 1, "gastou 1 madeira e criou construção")
+	_check(wood["n"] == 1 and _count(s.stages["floresta"], "construcao") == 1, "gastou 1 madeira e criou construção")
 
 	# Receita de data externa: conteúdo novo sem código (US-1.4)
 	var extra := RecipeDef.new()

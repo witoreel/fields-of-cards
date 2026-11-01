@@ -89,7 +89,11 @@ static func run(state: GameState, r: RecipeDef, a: Dictionary, b: Dictionary, ar
 		state.restack(state.area_cards(area_b))
 	var mult := Multipliers.total(state, a, r.activity)
 	for res in r.results:
-		state.spawn(StringName(res["id"]), area_b, _result_n(res, units, mult))
+		# Cartas móveis novas chegam ao chão do local (H1); as presas ao local,
+		# como a terra, ficam onde o trabalho foi feito.
+		var rd := state.catalog.get_def(StringName(res["id"]))
+		var dest: StringName = GameState.STAGE if rd != null and rd.props.has("movable") else area_b
+		state.spawn(StringName(res["id"]), dest, _result_n(res, units, mult))
 	if r.activity != &"":
 		state.add_skill(r.activity, units)
 	state.advance_time(ceili(r.minutes * units * factor)) # T1, mais lento com a ferramenta gasta (G1)

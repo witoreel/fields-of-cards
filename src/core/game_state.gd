@@ -69,6 +69,8 @@ var last_read: Dictionary = {}
 var unlocked: Array = []
 ## Ids que começam bloqueados (U1, U2). Vazio = nada bloqueado.
 var gated: Array = []
+## Cartas guardadas no achados e perdidos (H4, H5), com since_day.
+var lost_and_found: Array = []
 ## Pontos de skill por atividade (K1): {"lavoura": 12}.
 var skills: Dictionary = {}
 ## Buffs e debuffs do jogador, como na carta (C9). Formato livre.
@@ -132,6 +134,7 @@ func _on_woke_up(_day: int) -> void:
 func _on_day_ended(_day: int) -> void:
 	Farming.on_day_end(self)
 	Economy.on_day_end(self)
+	LostFound.on_day_end(self)
 	_check_bankruptcy()
 
 
@@ -769,6 +772,11 @@ func declare_bankruptcy(reason: String) -> void:
 	areas_changed.emit()
 
 
+## Comando: pega uma carta do achados e perdidos (H5), na cidade.
+func claim_lost(uid: int) -> bool:
+	return not is_game_over and LostFound.claim(self, uid)
+
+
 # --- Economia -------------------------------------------------------------
 
 func money() -> int:
@@ -977,6 +985,7 @@ func to_dict() -> Dictionary:
 		"farm_area_limit": farm_area_limit,
 		"skills": skills.duplicate(true),
 		"mail_queue": mail_queue.duplicate(true),
+		"lost_and_found": lost_and_found.duplicate(true),
 		"promotions": promotions.duplicate(true),
 		"last_read": last_read.duplicate(true),
 		"unlocked": unlocked.duplicate(),
@@ -1036,6 +1045,10 @@ static func from_dict(data: Variant) -> GameState:
 	s.next_uid = int(data.get("next_uid", 1))
 	s.minutes = int(data.get("minutes", WAKE_MINUTE))
 	s.farm_area_limit = int(data.get("farm_area_limit", 100))
+	var laf = _read_list(data.get("lost_and_found", []))
+	if laf == null:
+		return null
+	s.lost_and_found = laf
 	for key in ["mail_queue", "promotions", "unlocked", "gated"]:
 		if not (data.get(key, []) is Array):
 			return null

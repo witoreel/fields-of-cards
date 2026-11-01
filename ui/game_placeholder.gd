@@ -105,6 +105,17 @@ func _rebuild() -> void:
 		var money := Label.new()
 		money.text = "Dinheiro: %d   Comprar:" % state.money()
 		_shop_box.add_child(money)
+	if state.root_of(state.current_location) == LostFound.PLACE and not state.lost_and_found.is_empty():
+		_shop_box.visible = true
+		var lbl := Label.new()
+		lbl.text = "Achados e perdidos:"
+		_shop_box.add_child(lbl)
+		for card in state.lost_and_found:
+			var cb := Button.new()
+			var cd := state.def_of(card)
+			cb.text = "%s (%d dias)" % [cd.display_name if cd != null else card["id"], LostFound.days_left(state, card)]
+			cb.pressed.connect(func() -> void: GameSession.state.claim_lost(card["uid"]))
+			_shop_box.add_child(cb)
 	for item in items:
 		var b := Button.new()
 		var d := state.catalog.get_def(item["id"])
