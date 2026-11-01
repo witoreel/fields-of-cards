@@ -1,9 +1,50 @@
 [
-	{"day": 2, "title": "Dica: regar",
-	 "text": "Plantas só crescem se forem regadas no dia. Sem rega, o crescimento fica parado."},
-	{"day": 3, "title": "Dica: dormir",
-	 "text": "Passar das 22:00 acordado deixa você cansado no dia seguinte."},
-	{"day": 4, "title": "Promoção de enxadas",
-	 "text": "Enxadas com 20% de desconto por 3 dias na ferragem.",
-	 "promo": {"item": "enxada", "percent": 20, "days": 3}}
+	{
+		"day": 2,
+		"title": "Dica: regar",
+		"text": "Plantas só crescem se forem regadas no dia. Sem rega, o crescimento fica parado."
+	},
+	{
+		"day": 3,
+		"title": "Dica: dormir",
+		"text": "Passar das 22:00 acordado deixa você cansado no dia seguinte."
+	},
+	{
+		"day": 4,
+		"title": "Promoção de enxadas",
+		"text": "Enxadas com 20% de desconto por 3 dias na ferragem.",
+		"promo": {
+			"item": "enxada",
+			"percent": 20,
+			"days": 3
+		}
+	},
+	{
+		"day": 2,
+		"title": "Conheça a floresta",
+		"text": "A trilha da floresta está aberta. Lá há árvores para cortar.",
+		"unlock": [
+			"floresta"
+		]
+	},
+	{
+		"day": 3,
+		"title": "A cidade",
+		"text": "A estrada para a cidade está liberada: ferragem, feira e contas a pagar.",
+		"unlock": [
+			"cidade",
+			"ferragem",
+			"feira"
+		]
+	},
+	{
+		"day": 5,
+		"title": "Ferramentas novas",
+		"text": "A ferragem passou a vender machado, serrote e martelo.",
+		"unlock": [
+			"machado",
+			"serrote",
+			"martelo"
+		]
+	}
 ]

@@ -70,10 +70,10 @@ func _initialize() -> void:
 
 	# Sessão: iniciar e continuar
 	GameSession.start_new()
-	GameSession.state.travel_to(&"floresta")
+	GameSession.state.travel_to(&"casa")
 	_check(SaveGame.exists(), "sessão salvou no caminho padrão")
 	GameSession.state = null
-	_check(GameSession.continue_saved() and GameSession.state.current_location == &"floresta", "continuar pela sessão")
+	_check(GameSession.continue_saved() and GameSession.state.current_location == &"casa", "continuar pela sessão")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SaveGame.DEFAULT_PATH))
 
 	# Cenas montam com e sem save

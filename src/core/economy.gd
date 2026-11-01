@@ -94,7 +94,7 @@ static func buy(state: GameState, card_id: StringName) -> bool:
 	var d := state.catalog.get_def(card_id)
 	if d == null or not d.extra.has("price"):
 		return false
-	if StringName(d.extra.get("shop", "")) != state.current_location:
+	if StringName(d.extra.get("shop", "")) != state.current_location or not state.is_unlocked(card_id):
 		return false
 	if not spend(state, price_of(state, card_id)):
 		return false
@@ -107,7 +107,7 @@ static func shop_items(state: GameState) -> Array:
 	var out := []
 	for id in state.catalog.defs:
 		var d: CardDef = state.catalog.defs[id]
-		if d.extra.has("price") and StringName(d.extra.get("shop", "")) == state.current_location:
+		if d.extra.has("price") and StringName(d.extra.get("shop", "")) == state.current_location and state.is_unlocked(id):
 			out.append({"id": id, "price": price_of(state, id)})
 	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return String(a["id"]) < String(b["id"]))
 	return out

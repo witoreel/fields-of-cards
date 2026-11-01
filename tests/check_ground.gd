@@ -6,6 +6,7 @@ extends CheckBase
 func _initialize() -> void:
 	label = "Verificações do chão"
 	var s := GameState.new_game(1)
+	s.gated.clear() # este teste não trata da progressão
 	s.farm_area_limit = 1000
 	s.travel_to(&"roca")
 

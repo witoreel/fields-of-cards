@@ -122,6 +122,13 @@ var recipes: RecipeCatalog = RecipeCatalog.default()
 func _init() -> void:
 	day_ended.connect(_on_day_ended)
 	woke_up.connect(_on_woke_up)
+	event_due.connect(_on_event_due)
+
+
+## Eventos agendados que o próprio estado entende: liberar algo (U1).
+func _on_event_due(kind: String, data: Dictionary) -> void:
+	if kind == "unlock":
+		unlock(StringName(data["id"]))
 
 
 ## Quando o jogador acorda chega a correspondência (T6).
@@ -139,6 +146,7 @@ func _on_day_ended(_day: int) -> void:
 
 
 const INITIAL_STATE_PATH := "res://data/initial_state.json"
+const PROGRESSION_PATH := "res://data/progression.json"
 
 
 ## Jogo novo. Com `initial` (padrão), aplica o estado inicial de
@@ -172,6 +180,9 @@ func _apply_initial_state() -> void:
 	for loc in data.get("locations", {}):
 		_fill(cards[loc], data["locations"][loc])
 	mail_queue = Mail.load_schedule()
+	var prog = JSON.parse_string(FileAccess.get_file_as_string(PROGRESSION_PATH))
+	if prog is Dictionary:
+		gated = prog.get("gated", []).duplicate()
 
 
 func _fill(list: Array, entries: Array) -> void:
@@ -245,7 +256,7 @@ func destinations() -> Array[StringName]:
 	var out: Array[StringName] = []
 	var parent := parent_of(current_location)
 	for id in location_ids():
-		if id == current_location:
+		if id == current_location or not is_unlocked(id):
 			continue
 		var p := parent_of(id)
 		if p == &"" or p == current_location or id == parent or (parent != &"" and p == parent):
@@ -366,7 +377,7 @@ func _fire_due_events() -> void:
 func travel_to(id: StringName) -> bool:
 	if is_game_over:
 		return false
-	if not has_location(id):
+	if not has_location(id) or not is_unlocked(id):
 		return false
 	_close_storage_internal()
 	# A viagem gasta minutos (T1). Se a meia-noite cair no caminho, o dia
@@ -932,7 +943,12 @@ func read_letter(card: Dictionary) -> bool:
 	return true
 
 
-## Libera um local ou item (U1). A progressão usa isto (feature 18).
+## Está liberado (U1)? Só o que está em `gated` pode estar bloqueado.
+func is_unlocked(id: StringName) -> bool:
+	return not gated.has(String(id)) or unlocked.has(String(id))
+
+
+## Libera um local ou item (U1), por carta ou por evento agendado.
 func unlock(id: StringName) -> void:
 	if not unlocked.has(String(id)):
 		unlocked.append(String(id))
