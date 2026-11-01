@@ -23,6 +23,16 @@ const LOCATION_NAMES := {
 	&"fazenda": "Fazenda",
 	&"floresta": "Floresta",
 	&"cidade": "Cidade",
+	&"casa": "Casa",
+	&"ferragem": "Ferragem",
+	&"feira": "Feira",
+}
+## Local onde cada local fica (L4, L6, L8). Sem entrada = primeiro nível.
+## A casa fica dentro da fazenda; as lojas e a feira, dentro da cidade.
+const LOCATION_PARENTS := {
+	&"casa": &"fazenda",
+	&"ferragem": &"cidade",
+	&"feira": &"cidade",
 }
 
 ## Emitido ao chegar a um local (SV2 liga o autosave a ele).
@@ -87,8 +97,8 @@ func location_ids() -> Array[StringName]:
 	return out
 
 
-## Veículo é um local que tem uma localização dentro de outro local (L8).
-func add_vehicle_location(id: StringName, display_name: String, parent: StringName) -> bool:
+## Cria um local dentro de outro: veículo (L8) ou construído com nome (L6).
+func add_location(id: StringName, display_name: String, parent: StringName) -> bool:
 	if has_location(id) or not has_location(parent):
 		return false
 	extra_locations[String(id)] = {"name": display_name, "parent": String(parent)}
@@ -99,9 +109,35 @@ func add_vehicle_location(id: StringName, display_name: String, parent: StringNa
 
 ## Local onde o local está (L8), ou &"" se for um local de primeiro nível.
 func parent_of(id: StringName) -> StringName:
+	if LOCATION_PARENTS.has(id):
+		return LOCATION_PARENTS[id]
 	if extra_locations.has(String(id)):
 		return StringName(extra_locations[String(id)]["parent"])
 	return &""
+
+
+## Locais que ficam dentro de `id`.
+func children_of(id: StringName) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for c in location_ids():
+		if parent_of(c) == id:
+			out.append(c)
+	return out
+
+
+## Para onde dá para ir daqui (US-4.1, US-4.4): os locais de primeiro nível,
+## o que fica dentro do local atual, o que divide o mesmo pai e o próprio pai.
+## Escolher a ferragem estando na cidade não exige voltar ao mapa.
+func destinations() -> Array[StringName]:
+	var out: Array[StringName] = []
+	var parent := parent_of(current_location)
+	for id in location_ids():
+		if id == current_location:
+			continue
+		var p := parent_of(id)
+		if p == &"" or p == current_location or id == parent or (parent != &"" and p == parent):
+			out.append(id)
+	return out
 
 
 ## Comando: anda para um local. Devolve falso se o local não existe.

@@ -63,10 +63,10 @@ func _initialize() -> void:
 	_check(s.area_cards(GameState.LOCATION) == s.cards_at(&"floresta"), "local mudou")
 
 	# US-20.8: veículo é um local dentro de outro (L8)
-	_check(s.add_vehicle_location(&"carroca", "Carroça", &"fazenda"), "cria veículo")
+	_check(s.add_location(&"carroca", "Carroça", &"fazenda"), "cria veículo")
 	_check(s.parent_of(&"carroca") == &"fazenda", "veículo está na fazenda")
-	_check(not s.add_vehicle_location(&"carroca", "x", &"fazenda"), "id repetido")
-	_check(not s.add_vehicle_location(&"v2", "x", &"lua"), "pai inexistente")
+	_check(not s.add_location(&"carroca", "x", &"fazenda"), "id repetido")
+	_check(not s.add_location(&"v2", "x", &"lua"), "pai inexistente")
 	var cart := s.spawn(&"carroca", GameState.LOCATION)
 	_check(s.move_card(cart["uid"], GameState.HAND), "carta do veículo vai para a mão (AR9)")
 

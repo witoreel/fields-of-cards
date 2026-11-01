@@ -70,10 +70,9 @@ func _rebuild() -> void:
 	for child in _travel_box.get_children():
 		_travel_box.remove_child(child)
 		child.queue_free()
-	for id in state.location_ids():
+	for id in state.destinations():
 		var b := Button.new()
 		b.text = state.location_name(id)
-		b.disabled = id == state.current_location
 		b.pressed.connect(func() -> void: GameSession.state.travel_to(id))
 		_travel_box.add_child(b)
 	for area in _views:
