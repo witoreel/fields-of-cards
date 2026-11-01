@@ -82,6 +82,12 @@ func _initialize() -> void:
 		root.add_child(node)
 		await process_frame
 		_check(node.get_child_count() > 0, "cena monta: " + scene_path)
+		if scene_path.ends_with("game_placeholder.tscn"):
+			# A tela reage ao estado: abrir a mochila mostra a área.
+			GameSession.state.select_card(GameSession.state.hand[0]["uid"])
+			await process_frame
+			await process_frame
+			_check(node._views[GameState.BACKPACK].visible, "mochila aparece na tela ao abrir")
 		node.queue_free()
 
 	print("Verificações de estado concluídas, falhas: ", failures)
