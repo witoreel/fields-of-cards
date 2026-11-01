@@ -6,7 +6,7 @@ Como ler:
 - Formato: **Como** [quem], **quero** [o quê], **para** [por quê]. Em seguida vêm o **Aceite** (como saber que está pronta) e as **Regras** (códigos).
 - **Depende** marca uma decisão ainda em aberto (ver "Em aberto" na mecânica). A estória pode começar, mas a parte afetada espera a decisão.
 - Etiquetas: **[base]** se implementa primeiro, **[depois]** vem em seguida, **[ideia]** ainda não está decidida.
-- Os suplementos ficam fora deste arquivo.
+- Os suplementos ficam fora deste arquivo (ver `estorias-suplementos.md`).
 
 ---
 

@@ -1,6 +1,6 @@
 # Fields of Cards - Features globais da mecânica
 
-Visão geral das features que atravessam o jogo todo. Cada uma reúne regras de `regras-mecanica.md` pelos seus códigos. Os suplementos (`regras-suplementos.md`) usam estas mesmas features, sem criar sistemas novos.
+Visão geral das features que atravessam o jogo todo. Cada uma reúne regras de `regras-mecanica.md` pelos seus códigos. Os suplementos (`regras-suplementos.md`) usam estas mesmas features, sem criar sistemas novos; as features deles estão em `features-suplementos.md`.
 
 Etiquetas: **[base]** se implementa primeiro, **[depois]** vem em seguida.
 

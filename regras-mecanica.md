@@ -45,7 +45,7 @@ Como ler:
 - T7. O dia termina à meia-noite (00:00), de forma inevitável. É a virada de dia, e o que depende do fim do dia acontece nela.
 - T8. O jogador acorda às 06:00.
 - T9. Se o jogador passar das 22:00 acordado, acorda com o debuff de performance "cansado".
-- T10. No primeiro momento não há relógio: as ações não gastam tempo e o estado não guarda hora. Os tempos de T1 a T9 entram quando o relógio entrar.
+- T10. No primeiro momento não havia relógio. Ele entrou com a feature 2: o estado guarda os minutos desde o início (o jogo começa às 06:00 do dia 1) e as ações gastam tempo.
 
 ## Dinheiro e dívidas [base]
 - D1. Itens são vendidos por dinheiro.
