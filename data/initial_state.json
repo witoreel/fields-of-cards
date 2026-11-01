@@ -7,7 +7,7 @@
 		{"id": "carta_boas_vindas", "state": {"attachments": [{"id": "semente", "n": 5}]}}
 	],
 	"locations": {
-		"fazenda": [{"id": "caixa_venda"}],
+		"fazenda": [{"id": "caixa_venda"}, {"id": "torneira"}],
 		"floresta": [{"id": "arvore"}]
 	},
 	"new_locations": [

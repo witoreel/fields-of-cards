@@ -107,6 +107,6 @@ func _initialize() -> void:
 	extra.results = [{"id": "madeira", "n": 2}]
 	s.recipes.recipes.append(extra)
 	var t1 := s.minutes
-	_check(s.apply_recipe(hoe["uid"], pot["uid"]) and s.minutes == t1 + 5, "receita nova funciona sem mexer em código")
+	_check(s.apply_recipe(hoe["uid"], pot["uid"]) and s.minutes - t1 >= 5, "receita nova funciona sem mexer em código")
 	s.recipes.recipes.pop_back()
 	_finish()

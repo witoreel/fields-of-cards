@@ -564,6 +564,8 @@ func move_card(uid: int, to_area: StringName, index: int = -1) -> bool:
 		if limit > 0 and area_weight(to_area) + card_weight(card) > limit:
 			return false # passaria do limite de peso (P2, P3)
 	src.remove_at(from["index"])
+	if from["area"] != to_area and (to_area == BACKPACK or to_area == STORAGE):
+		Wear.on_stored(self, card) # guardar sujo ou molhado desgasta (G5)
 	if from["area"] != to_area and not _stack_into(dst, card).is_empty():
 		areas_changed.emit()
 		return true
@@ -724,10 +726,10 @@ func apply_recipe(a_uid: int, b_uid: int) -> bool:
 	var cb: Dictionary = area_cards(lb["area"])[lb["index"]]
 	if has_prop(cb, &"sell_box") and Economy.sell(self, a_uid, b_uid):
 		return true
-	var r := recipes.find(StringName(ca["id"]), StringName(cb["id"]))
+	var r := recipes.find_for(self, ca, cb)
 	if r != null:
 		return _run(r, ca, cb, lb["area"])
-	r = recipes.find(StringName(cb["id"]), StringName(ca["id"]))
+	r = recipes.find_for(self, cb, ca)
 	if r != null:
 		return _run(r, cb, ca, la["area"])
 	return false
@@ -741,7 +743,7 @@ func use_card(uid: int) -> bool:
 	if l.is_empty():
 		return false
 	var card: Dictionary = area_cards(l["area"])[l["index"]]
-	var r := recipes.find(&"", StringName(card["id"]))
+	var r := recipes.find_for(self, {}, card)
 	return r != null and _run(r, {}, card, l["area"])
 
 

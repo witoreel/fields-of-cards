@@ -12,3 +12,4 @@ b_use = 1
 minutes = 60
 results = [{"id": "construcao", "n": 1}]
 set_state_b = {}
+a_wear = 1

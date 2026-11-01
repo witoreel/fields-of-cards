@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RecipeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/recipe_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"polir_ferrugem"
+a = &"palha_aco"
+b = &"#tool"
+a_use = 1
+b_use = 0
+minutes = 20
+results = []
+set_state_b = {}
+b_status_remove = PackedStringArray("enferrujada")

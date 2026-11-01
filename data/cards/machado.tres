@@ -6,6 +6,6 @@
 script = ExtResource("1")
 id = &"machado"
 display_name = "Machado"
-props = PackedStringArray("tool", "movable")
+props = PackedStringArray("tool", "cutting", "movable")
 weight = 1500
 extra = {"price": 60, "shop": "ferragem"}

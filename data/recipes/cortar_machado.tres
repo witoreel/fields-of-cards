@@ -12,3 +12,6 @@ b_use = 0
 minutes = 30
 results = [{"id": "madeira", "n": 1}]
 set_state_b = {}
+a_wear = 2
+a_edge_wear = 4
+a_status_add = PackedStringArray("sujo")

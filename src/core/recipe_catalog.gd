@@ -32,3 +32,22 @@ func find(a: StringName, b: StringName) -> RecipeDef:
 		if r.a == a and r.b == b:
 			return r
 	return null
+
+
+## Receita para o par de cartas, casando por id ou por "#propriedade".
+## `a` vazio ({}) procura receitas de clique.
+func find_for(state: GameState, ca: Dictionary, cb: Dictionary) -> RecipeDef:
+	for r in recipes:
+		if _matches(state, r.a, ca) and _matches(state, r.b, cb):
+			return r
+	return null
+
+
+static func _matches(state: GameState, pattern: StringName, card: Dictionary) -> bool:
+	if pattern == &"":
+		return card.is_empty()
+	if card.is_empty():
+		return false
+	if String(pattern).begins_with("#"):
+		return state.has_prop(card, StringName(String(pattern).substr(1)))
+	return pattern == StringName(card["id"])
