@@ -16,3 +16,6 @@ extends Resource
 @export var results: Array = []
 ## Estado acrescentado à carta alvo, por exemplo {"watered": true}.
 @export var set_state_b: Dictionary = {}
+## Volume gasto da carta `a` (o regador) por unidade de `b`, em gramas (P5).
+## 0 = não usa volume. Sem volume suficiente, a receita não roda.
+@export var a_volume_per_b: int = 0

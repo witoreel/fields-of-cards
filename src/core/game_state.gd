@@ -456,6 +456,10 @@ func move_card(uid: int, to_area: StringName, index: int = -1) -> bool:
 		if to_area == BACKPACK and has_prop(card, &"backpack"):
 			return false
 	var dst := area_cards(to_area)
+	if from["area"] != to_area:
+		var limit := area_limit(to_area)
+		if limit > 0 and area_weight(to_area) + card_weight(card) > limit:
+			return false # passaria do limite de peso (P2, P3)
 	src.remove_at(from["index"])
 	if from["area"] != to_area and not _stack_into(dst, card).is_empty():
 		areas_changed.emit()
@@ -465,6 +469,58 @@ func move_card(uid: int, to_area: StringName, index: int = -1) -> bool:
 	dst.insert(index, card)
 	areas_changed.emit()
 	return true
+
+
+# --- Peso e volume --------------------------------------------------------
+
+## Volume atual de um recipiente como o regador (P5), em gramas. Sem estado
+## guardado, está cheio (capacidade em extra["capacity"]).
+func volume_of(card: Dictionary) -> int:
+	var d := def_of(card)
+	var cap := int(d.extra.get("capacity", 0)) if d != null else 0
+	return int(card.get("state", {}).get("volume", cap))
+
+
+## Peso da carta em gramas (P1): peso unitário da definição × quantidade, mais
+## o conteúdo se for um storage. Dinheiro e locais têm peso 0 (D9, P1).
+func card_weight(card: Dictionary) -> int:
+	var d := def_of(card)
+	var w := (d.weight if d != null else 0) * int(card.get("n", 1))
+	if storages.has(str(card.get("uid", 0))):
+		for inner in storages[str(card["uid"])]:
+			w += card_weight(inner)
+	return w
+
+
+func list_weight(list: Array) -> int:
+	var w := 0
+	for c in list:
+		w += card_weight(c)
+	return w
+
+
+## Peso das cartas guardadas numa área, em gramas.
+func area_weight(area: StringName) -> int:
+	return list_weight(area_cards(area))
+
+
+## Limite de peso da área em gramas (P2, P3), ou 0 se não tem. Vem do
+## extra["weight_limit"] da carta da mochila ou do storage aberto.
+func area_limit(area: StringName) -> int:
+	var holder: Dictionary = {}
+	if area == BACKPACK:
+		for c in hand:
+			if has_prop(c, &"backpack"):
+				holder = c
+				break
+	elif area == STORAGE:
+		for c in hand:
+			if int(c["uid"]) == open_storage_uid:
+				holder = c
+				break
+	if holder.is_empty():
+		return 0
+	return int(def_of(holder).extra.get("weight_limit", 0))
 
 
 # --- Receitas -------------------------------------------------------------
@@ -500,6 +556,12 @@ func use_card(uid: int) -> bool:
 func _run(r: RecipeDef, a: Dictionary, b: Dictionary, area_b: StringName) -> bool:
 	if (r.a_use > 0 and int(a["n"]) < r.a_use) or (r.b_use > 0 and int(b["n"]) < r.b_use):
 		return false
+	var water_needed := r.a_volume_per_b * int(b.get("n", 1))
+	if water_needed > 0:
+		if volume_of(a) < water_needed:
+			return false
+		a["state"] = a.get("state", {}).duplicate()
+		a["state"]["volume"] = volume_of(a) - water_needed
 	if r.a_use > 0:
 		_consume(a, r.a_use)
 	if r.b_use > 0:

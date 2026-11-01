@@ -8,3 +8,4 @@ id = &"regador"
 display_name = "Regador"
 props = PackedStringArray("tool", "movable")
 weight = 800
+extra = {"capacity": 2000}

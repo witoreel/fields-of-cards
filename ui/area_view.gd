@@ -21,6 +21,9 @@ func _init() -> void:
 
 func show_area(p_area: StringName, title: String, state: GameState) -> void:
 	area = p_area
+	var limit := state.area_limit(p_area)
+	if limit > 0 or p_area == GameState.BACKPACK or p_area == GameState.STORAGE:
+		title += " (%d / %d g)" % [state.area_weight(p_area), limit]
 	_title.text = title
 	for child in _row.get_children():
 		_row.remove_child(child)

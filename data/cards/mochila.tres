@@ -8,3 +8,4 @@ id = &"mochila"
 display_name = "Mochila"
 props = PackedStringArray("backpack")
 weight = 0
+extra = {"weight_limit": 20000}

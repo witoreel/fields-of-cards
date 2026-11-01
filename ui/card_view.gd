@@ -19,6 +19,11 @@ func setup(card: Dictionary, p_area: StringName, p_index: int, state: GameState)
 		title += " x%d" % int(card["n"])
 	if card.has("open"):
 		title += " (aberto)"
+	var w := state.card_weight(card)
+	if w > 0:
+		title += "\n%d g" % w
+	if d != null and d.extra.has("capacity"):
+		title += "\n%d/%d g de água" % [state.volume_of(card), int(d.extra["capacity"])]
 	text = title
 	custom_minimum_size = Vector2(104, 72)
 	focus_mode = Control.FOCUS_ALL
@@ -41,6 +46,9 @@ func _can_drop_data(_at: Vector2, data: Variant) -> bool:
 
 
 func _drop_data(_at: Vector2, data: Variant) -> void:
+	# Arrastar sobre outra carta tenta a receita (C2); sem receita, reordena (C5).
+	if GameSession.state.apply_recipe(int(data["uid"]), uid):
+		return
 	var dest := index
 	# Dentro da mesma área, tirar a carta de antes desloca o destino.
 	var from := GameSession.state.find_card(int(data["uid"]))

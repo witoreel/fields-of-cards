@@ -10,5 +10,6 @@ b = &"terra_semeada"
 a_use = 0
 b_use = 0
 minutes = 10
+a_volume_per_b = 50
 results = []
 set_state_b = {"watered": true}

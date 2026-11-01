@@ -8,3 +8,4 @@ id = &"bau"
 display_name = "Baú"
 props = PackedStringArray("storage", "movable")
 weight = 5000
+extra = {"weight_limit": 50000}
