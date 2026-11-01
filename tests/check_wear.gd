@@ -19,6 +19,7 @@ func _initialize() -> void:
 		s.farm_area_limit = 100000
 		s.apply_recipe(hoe["uid"], soil["uid"])
 	_check(Wear.durability(hoe) == 0 and s.hand.has(hoe), "durabilidade chega a 0 e a ferramenta continua existindo (não quebra)")
+	s.sleep() # começa a ação cedo, sem a meia-noite no meio
 	t = s.minutes
 	var expected := ceili(30 * 4 * s.buff_multiplier("time_mult")) # cansado muda o tempo (T9)
 	s.apply_recipe(hoe["uid"], soil["uid"])
