@@ -11,6 +11,11 @@ const FOX_KILLS := 1
 const EGG_LOSS := 3
 const RAT_SPOIL := 2 # m² de plantio estragados
 const HELPER_TASKS := ["regar"]
+## Ervas daninhas (O1): chance por noite, em cada local da fazenda com terra
+## arada ou plantio, de nascerem 1 a 3 m² de erva. Com erva no local, o plantio
+## não cresce na noite (provisório).
+const WEED_CHANCE := 0.3
+const WEED := &"erva_daninha"
 
 
 static func has_pet(state: GameState, prop: StringName) -> bool:
@@ -58,9 +63,29 @@ static func rat_attack(state: GameState) -> int:
 	return spoiled
 
 
+static func weeds_at(state: GameState, loc: StringName) -> int:
+	var n := 0
+	for c in state.cards[String(loc)]:
+		if c["id"] == String(WEED):
+			n += int(c["n"])
+	return n
+
+
+static func _spawn_weeds(state: GameState) -> void:
+	for loc in state.farm_locations():
+		var list: Array = state.cards[String(loc)]
+		var tilled := list.any(func(c: Dictionary) -> bool: return String(c["id"]).begins_with("terra_") and c["id"] != "terra_bruta")
+		if tilled and state.rng.randf() < WEED_CHANCE:
+			var n := mini(state.rng.randi_range(1, 3), maxi(0, state.farm_area_free()))
+			if n > 0:
+				state.spawn_into(list, WEED, n)
+				state.last_events.append("weeds:%d" % n)
+
+
 static func on_day_end(state: GameState) -> void:
 	if not state.pests_enabled:
 		return
+	_spawn_weeds(state)
 	if not has_pet(state, &"dog") and state.rng.randf() < FOX_CHANCE:
 		state.last_events.append("fox:%d" % fox_attack(state))
 	if not has_pet(state, &"cat") and state.rng.randf() < RAT_CHANCE:

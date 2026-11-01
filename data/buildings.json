@@ -63,5 +63,18 @@
 			2,
 			3
 		]
+	},
+	"acude": {
+		"name": "Açude",
+		"m2": 20,
+		"base_multiplier": 1.0,
+		"wood": 10,
+		"pro_cost": 500,
+		"build_minutes": 480,
+		"capacity": [
+			20,
+			40,
+			80
+		]
 	}
 }

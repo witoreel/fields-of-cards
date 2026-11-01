@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"vara_pesca"
+display_name = "Vara de pescar"
+props = PackedStringArray("tool", "movable")
+weight = 600
+extra = {"price": 25, "shop": ["ferragem", "vila"]}

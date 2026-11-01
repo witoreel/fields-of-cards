@@ -69,8 +69,9 @@ static func on_day_end(state: GameState) -> void:
 		for card in list.duplicate():
 			if not is_animal(state, card):
 				continue
-			animals += 1
 			var r := rule(state, card)
+			if not r.get("no_dung", false):
+				animals += 1 # peixe não suja o celeiro
 			var st: Dictionary = card["state"].duplicate(true)
 			var fed_before := int(st["food"]) > 0
 			st["food"] = maxi(0, int(st["food"]) - int(r.get("food_per_day", 30)))

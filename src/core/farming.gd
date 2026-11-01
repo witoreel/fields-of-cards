@@ -7,6 +7,8 @@ extends RefCounted
 
 static func on_day_end(state: GameState) -> void:
 	for loc in state.cards:
+		if Pests.weeds_at(state, StringName(loc)) > 0:
+			continue # com erva daninha no local, o plantio fica parado (O1)
 		_grow_list(state, state.cards[loc])
 	for loc in state.stages:
 		_grow_list(state, state.stages[loc])
