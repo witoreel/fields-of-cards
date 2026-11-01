@@ -78,6 +78,8 @@ func _rebuild() -> void:
 	_dirty = false
 	var state := GameSession.state
 	_location_label.text = state.location_name(state.current_location)
+	if state.is_game_over:
+		_location_label.text = "FALÊNCIA: fim de jogo (%s)" % state.game_over_reason
 	_clock_label.text = "Fazenda %d/%d m²   " % [state.farm_area_used(), state.farm_area_limit] + state.clock_text() + ("  (cansado)" if state.is_tired() else "")
 	for child in _travel_box.get_children():
 		_travel_box.remove_child(child)

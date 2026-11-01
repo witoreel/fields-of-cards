@@ -45,6 +45,8 @@ signal day_ended(day: int)
 signal woke_up(day: int)
 ## Um evento agendado venceu (T3). Sistemas (crescimento, contas) ouvem isto.
 signal event_due(kind: String, data: Dictionary)
+## A falência encerrou o jogo (F1, D7).
+signal game_over(reason: String)
 ## Emitido quando cartas mudam de lugar ou de ordem, ou áreas abrem/fecham.
 signal areas_changed
 ## Emitido quando uma carta se soma a outra igual (C4). A interface usa para
@@ -74,6 +76,13 @@ const TRAVEL_MINUTES := {
 ## provisório; cresce por expansão no futuro.
 var farm_area_limit := 100
 
+## Falência (D7, F1). O gatilho e a consequência estão em aberto (F2): por
+## ora, se a dívida vencida passar de `bankruptcy_debt_limit` na virada do
+## dia, o jogo acaba. 0 desliga o gatilho. Sem outra consequência além do fim.
+var bankruptcy_debt_limit := 0
+var is_game_over := false
+var game_over_reason := ""
+
 var current_location: StringName = START_LOCATION
 ## location_id (String) -> Array[Dictionary] de cartas, na ordem.
 var cards: Dictionary = {}
@@ -99,7 +108,8 @@ var recipes: RecipeCatalog = RecipeCatalog.default()
 func _init() -> void:
 	day_ended.connect(func(_day: int) -> void:
 		Farming.on_day_end(self)
-		Economy.on_day_end(self))
+		Economy.on_day_end(self)
+		_check_bankruptcy())
 
 
 static func new_game(seed_value: int = 0) -> GameState:
@@ -217,6 +227,8 @@ func clock_text() -> String:
 ## termina de forma inevitável (T7): o jogador dorme e acorda às 06:00, e o
 ## que sobrar da ação se perde.
 func advance_time(amount: int) -> void:
+	if is_game_over:
+		return
 	if amount <= 0:
 		return
 	var to_midnight := (minutes / MINUTES_PER_DAY + 1) * MINUTES_PER_DAY - minutes
@@ -230,6 +242,8 @@ func advance_time(amount: int) -> void:
 ## Comando: dorme até as 06:00 (T4, T8). Quem dormiu depois das 22:00 acorda
 ## cansado (T9). Dormir é possível a qualquer hora (aberto: antes das 22:00).
 func sleep() -> void:
+	if is_game_over:
+		return
 	var m := minute_of_day()
 	var tired := m >= TIRED_MINUTE
 	if m < WAKE_MINUTE:
@@ -284,6 +298,8 @@ func _fire_due_events() -> void:
 ## Comando: anda para um local. Devolve falso se o local não existe.
 ## O tempo gasto (T1) ainda é zero, porque não há relógio.
 func travel_to(id: StringName) -> bool:
+	if is_game_over:
+		return false
 	if not has_location(id):
 		return false
 	_close_storage_internal()
@@ -450,6 +466,8 @@ func find_card(uid: int) -> Dictionary:
 ## Comando: move uma carta móvel para outra área aberta (AR6, C7, C8).
 ## `index` -1 põe no fim. Dentro da mesma área só reordena (C5).
 func move_card(uid: int, to_area: StringName, index: int = -1) -> bool:
+	if is_game_over:
+		return false
 	var from := find_card(uid)
 	if from.is_empty() or not is_open(to_area):
 		return false
@@ -562,6 +580,24 @@ func area_limit(area: StringName) -> int:
 	return int(def_of(holder).extra.get("weight_limit", 0))
 
 
+# --- Falência -------------------------------------------------------------
+
+func _check_bankruptcy() -> void:
+	if bankruptcy_debt_limit > 0 and Economy.overdue_debt(self) > bankruptcy_debt_limit:
+		declare_bankruptcy("dívida vencida de %d" % Economy.overdue_debt(self))
+
+
+## Comando: encerra o jogo por falência (D7, F1). Depois disso os comandos
+## que mudam o jogo são recusados.
+func declare_bankruptcy(reason: String) -> void:
+	if is_game_over:
+		return
+	is_game_over = true
+	game_over_reason = reason
+	game_over.emit(reason)
+	areas_changed.emit()
+
+
 # --- Economia -------------------------------------------------------------
 
 func money() -> int:
@@ -570,11 +606,15 @@ func money() -> int:
 
 ## Comando: compra uma carta da loja do local atual (D2).
 func buy(card_id: StringName) -> bool:
+	if is_game_over:
+		return false
 	return Economy.buy(self, card_id)
 
 
 ## Comando: vende a pilha `uid` numa caixa de venda `box_uid` (D1, E1).
 func sell(uid: int, box_uid: int) -> bool:
+	if is_game_over:
+		return false
 	return Economy.sell(self, uid, box_uid)
 
 
@@ -585,6 +625,8 @@ func issue_bill(amount: int, due: int) -> Dictionary:
 
 ## Comando: paga uma conta, na cidade (D4).
 func pay_bill(uid: int) -> bool:
+	if is_game_over:
+		return false
 	return Economy.pay_bill(self, uid)
 
 
@@ -593,6 +635,8 @@ func pay_bill(uid: int) -> bool:
 ## Comando: arrasta a carta `a_uid` sobre `b_uid` (C2). Se existe receita para
 ## o par (em qualquer ordem), executa; senão, nada muda. Devolve se executou.
 func apply_recipe(a_uid: int, b_uid: int) -> bool:
+	if is_game_over:
+		return false
 	var la := find_card(a_uid)
 	var lb := find_card(b_uid)
 	if la.is_empty() or lb.is_empty() or a_uid == b_uid:
@@ -612,6 +656,8 @@ func apply_recipe(a_uid: int, b_uid: int) -> bool:
 
 ## Comando: usa uma carta sozinha (receita de clique, como colher).
 func use_card(uid: int) -> bool:
+	if is_game_over:
+		return false
 	var l := find_card(uid)
 	if l.is_empty():
 		return false
@@ -671,6 +717,8 @@ func _consume(card: Dictionary, amount: int) -> void:
 ## Comando: seleciona uma carta. A mochila abre/fecha (AR3, AR8), um storage
 ## do local ou do chão abre (AR4) e o ícone de storage aberto na mão o fecha.
 func select_card(uid: int) -> bool:
+	if is_game_over:
+		return false
 	var from := find_card(uid)
 	if from.is_empty():
 		return false
@@ -734,6 +782,9 @@ func to_dict() -> Dictionary:
 		"next_uid": next_uid,
 		"minutes": minutes,
 		"farm_area_limit": farm_area_limit,
+		"bankruptcy_debt_limit": bankruptcy_debt_limit,
+		"game_over_reason": game_over_reason,
+		"is_game_over": is_game_over,
 		"player_buffs": player_buffs.duplicate(true),
 		"scheduled": scheduled.duplicate(true),
 		# Inteiros de 64 bits viram texto: JSON só garante 53 bits.
@@ -786,6 +837,9 @@ static func from_dict(data: Variant) -> GameState:
 	s.next_uid = int(data.get("next_uid", 1))
 	s.minutes = int(data.get("minutes", WAKE_MINUTE))
 	s.farm_area_limit = int(data.get("farm_area_limit", 100))
+	s.bankruptcy_debt_limit = int(data.get("bankruptcy_debt_limit", 0))
+	s.is_game_over = bool(data.get("is_game_over", false))
+	s.game_over_reason = str(data.get("game_over_reason", ""))
 	var pb = data.get("player_buffs", [])
 	var sc = data.get("scheduled", [])
 	if not (pb is Array) or not (sc is Array):

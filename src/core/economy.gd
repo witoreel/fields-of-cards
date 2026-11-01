@@ -145,3 +145,20 @@ static func on_day_end(state: GameState) -> void:
 		if state.minutes > int(st["due"]) and not st.get("fined", false):
 			st["amount"] = int(st["amount"]) + maxi(1, int(st["amount"]) * FINE_PERCENT / 100)
 			st["fined"] = true
+
+
+## Soma das contas em aberto (D6).
+static func total_debt(state: GameState) -> int:
+	var total := 0
+	for b in open_bills(state):
+		total += int(b["state"]["amount"])
+	return total
+
+
+## Soma das contas já vencidas.
+static func overdue_debt(state: GameState) -> int:
+	var total := 0
+	for b in open_bills(state):
+		if is_overdue(state, b):
+			total += int(b["state"]["amount"])
+	return total
