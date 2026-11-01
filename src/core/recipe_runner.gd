@@ -20,7 +20,7 @@ static func max_units(state: GameState, r: RecipeDef, a: Dictionary, b: Dictiona
 		var delta := _area_delta(state, r, a, b, 1)
 		if delta > 0:
 			most = mini(most, state.farm_area_free() / delta)
-	var per_unit := maxi(1, ceili(r.minutes * Wear.time_factor(state, a)))
+	var per_unit := maxi(1, ceili(r.minutes * Wear.time_factor(state, a) * state.buff_multiplier("time_mult")))
 	var left := GameState.MINUTES_PER_DAY - state.minute_of_day()
 	most = mini(most, maxi(1, left / per_unit))
 	return maxi(1, most)
@@ -65,7 +65,7 @@ static func run(state: GameState, r: RecipeDef, a: Dictionary, b: Dictionary, ar
 			return false
 		a["state"] = a.get("state", {}).duplicate()
 		a["state"]["volume"] = state.volume_of(a) - water_needed
-	var factor := Wear.time_factor(state, a)
+	var factor := Wear.time_factor(state, a) * state.buff_multiplier("time_mult")
 	# Estados da ferramenta e do alvo que a receita muda (S1, G1, G4).
 	Wear.apply_use(state, a, r.a_wear * units, r.a_edge_wear * units)
 	for st in r.a_status_remove:

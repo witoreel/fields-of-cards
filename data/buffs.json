@@ -1,0 +1,5 @@
+{
+	"cansado": {"name": "Cansado", "time_mult": 1.25, "yield_mult": 0.9},
+	"sobrecarregado": {"name": "Sobrecarregado", "time_mult": 1.25},
+	"energizado": {"name": "Energizado", "time_mult": 0.9, "yield_mult": 1.1}
+}

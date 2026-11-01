@@ -307,7 +307,7 @@ func _end_day_and_wake(tired: bool) -> void:
 func _wake(tired: bool) -> void:
 	player_buffs = player_buffs.filter(func(b: Dictionary) -> bool: return b.get("id") != "cansado")
 	if tired:
-		# O efeito do "cansado" está em aberto; por ora é só o marcador.
+		# O efeito (tempo e rendimento) vem de data/buffs.json.
 		player_buffs.append({"id": "cansado", "kind": "debuff"})
 	woke_up.emit(day_number())
 
@@ -319,6 +319,7 @@ func is_tired() -> bool:
 func _step(amount: int) -> void:
 	var from := minutes
 	minutes += amount
+	_expire_buffs()
 	_fire_due_events()
 	time_advanced.emit(from, minutes)
 	areas_changed.emit()
@@ -349,7 +350,7 @@ func travel_to(id: StringName) -> bool:
 	_close_storage_internal()
 	# A viagem gasta minutos (T1). Se a meia-noite cair no caminho, o dia
 	# acaba e o jogador acorda às 06:00 já no destino.
-	advance_time(travel_minutes(current_location, id))
+	advance_time(ceili(travel_minutes(current_location, id) * buff_multiplier("time_mult")))
 	current_location = id
 	arrived.emit(id)
 	areas_changed.emit()
@@ -672,12 +673,32 @@ func add_skill(activity: StringName, points: int) -> void:
 	skills[String(activity)] = int(skills.get(String(activity), 0)) + points
 
 
-## Produto de um campo numérico dos buffs e debuffs do jogador (1.0 se ninguém tem).
+## Produto de um campo de efeito dos buffs e debuffs do jogador (1.0 se não há).
 func buff_multiplier(key: String) -> float:
-	var m := 1.0
-	for b in player_buffs:
-		m *= float(b.get(key, 1.0))
-	return m
+	return Buffs.multiplier(self, key)
+
+
+## Comando: come um alimento (S3), que dá o buff dele. O buff dura `days` dias.
+func eat(uid: int) -> bool:
+	if is_game_over:
+		return false
+	var l := find_card(uid)
+	if l.is_empty():
+		return false
+	var card: Dictionary = area_cards(l["area"])[l["index"]]
+	var d := def_of(card)
+	if d == null or not d.extra.has("food"):
+		return false
+	var food: Dictionary = d.extra["food"]
+	_consume_card_for_build(l)
+	player_buffs = player_buffs.filter(func(b: Dictionary) -> bool: return b.get("id") != food["buff"])
+	player_buffs.append({"id": food["buff"], "expires": minutes + int(food.get("days", 1)) * MINUTES_PER_DAY})
+	areas_changed.emit()
+	return true
+
+
+func _expire_buffs() -> void:
+	player_buffs = player_buffs.filter(func(b: Dictionary) -> bool: return not b.has("expires") or int(b["expires"]) > minutes)
 
 
 ## Comando: transforma uma carta de construção num local novo (R8, L6).
@@ -851,6 +872,8 @@ func select_card(uid: int) -> bool:
 		return true
 	if has_prop(card, &"mail"):
 		return read_letter(card)
+	if def_of(card) != null and def_of(card).extra.has("food"):
+		return eat(uid) # clicar num alimento o come (S3)
 	if card["id"] == String(Economy.BILL):
 		return Economy.pay_bill(self, uid) # clicar na conta tenta pagá-la (D4)
 	return use_card(uid)

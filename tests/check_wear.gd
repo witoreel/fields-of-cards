@@ -20,8 +20,9 @@ func _initialize() -> void:
 		s.apply_recipe(hoe["uid"], soil["uid"])
 	_check(Wear.durability(hoe) == 0 and s.hand.has(hoe), "durabilidade chega a 0 e a ferramenta continua existindo (não quebra)")
 	t = s.minutes
+	var expected := ceili(30 * 4 * s.buff_multiplier("time_mult")) # cansado muda o tempo (T9)
 	s.apply_recipe(hoe["uid"], soil["uid"])
-	_check(s.minutes - t == 30 * 4 and Wear.durability(hoe) == 0, "com durabilidade 0 leva 4x (120 min) e não passa de 0")
+	_check(s.minutes - t == expected and Wear.durability(hoe) == 0, "com durabilidade 0 leva 4x (120 min) e não passa de 0")
 	var half := s.spawn(&"enxada", GameState.HAND)
 	half["state"] = {"durability": 50}
 	_check(absf(Wear.time_factor(s, half) - 2.5) < 0.001, "durabilidade 50 -> 2,5x")
