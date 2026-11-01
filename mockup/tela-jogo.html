@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fields of Cards - mockup da tela</title>
+<style>
+  /* Tokens: viram o Theme do Godot depois de alinhado. Sem animações (W5, W6). */
+  :root {
+    --bg: #1d2420;
+    --panel: #26302a;
+    --panel-line: #3a483f;
+    --card: #e9e1c8;
+    --card-line: #b9ad86;
+    --card-text: #2b2a22;
+    --text: #cfd8cf;
+    --muted: #8b998f;
+    --accent: #e0c15a;
+    --gap: 8px;
+    --margin: 8px;
+    --font: 12px;
+    --card-w: 130px;
+    --card-h: 158px;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--text); font: var(--font)/1.3 system-ui, sans-serif; overflow: hidden; }
+
+  .screen { height: 100%; padding: var(--gap); }
+  .main { display: grid; grid-template-rows: 32px 1fr; gap: var(--gap); height: 100%; min-height: 0; }
+
+  /* Barra de cima: local e destinos à esquerda, metragem e horário à direita */
+  .top { display: flex; align-items: center; gap: 12px; }
+  .loc { font-size: 14px; font-weight: 600; color: var(--accent); }
+  .dest { display: flex; gap: 4px; }
+  .dest button, .gear { background: var(--panel); color: var(--text); border: 1px solid var(--panel-line); border-radius: 4px; padding: 3px 8px; font: inherit; cursor: pointer; }
+  .dest button:hover, .gear:hover { border-color: var(--accent); }
+  .info { margin-left: auto; display: flex; gap: 14px; color: var(--muted); }
+  .info b { color: var(--text); font-weight: 600; }
+
+  /* Mesa: Local em cima (AR4), Mochila embaixo (AR3), Mão numa lateral (AR7)
+     e Chão na outra. O meio fica livre. Cartas com altura padrão. */
+  .table { display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: auto 1fr auto; gap: var(--gap); min-height: 0; }
+  .t { grid-column: 1 / 4; }
+  .l { grid-column: 1; grid-row: 2; }
+  .c { position: relative; grid-column: 2; grid-row: 2; display: flex; align-items: center; justify-content: center; min-height: 0; }
+  /* Chão no centro: duas fileiras de cartas de altura, com folga ao redor */
+  .ground { --pad: 18px; width: 100%; max-width: 760px; height: calc(2 * var(--card-h) + var(--gap) + 2 * var(--pad) + 2px); padding: var(--pad); }
+  .ground .cards { display: flex; flex-wrap: wrap; align-content: flex-start; gap: var(--gap); height: 100%; overflow-y: auto; }
+  .r { grid-column: 3; grid-row: 2; }
+  .b { grid-column: 1 / 4; grid-row: 3; }
+
+  /* Área: o nome fica no fundo, grande e apagado, para ganhar pixels */
+  .area { position: relative; background: var(--panel); border: 1px solid var(--panel-line); border-radius: 6px; padding: var(--margin); min-height: 0; overflow: hidden; }
+  .area::before { content: attr(data-name); position: absolute; right: 10px; bottom: 4px; font-size: 40px; font-weight: 700; letter-spacing: 1px; color: rgba(255,255,255,.05); pointer-events: none; text-transform: uppercase; }
+  .t .cards, .b .cards { display: flex; gap: var(--gap); overflow-x: auto; }
+  /* Laterais: duas colunas, mais baixas que a tela, centradas na vertical */
+  .l .cards, .r .cards { display: grid; grid-template-columns: repeat(2, var(--card-w)); gap: var(--gap); overflow-y: auto; align-content: start; height: 100%; }
+  .l, .r { align-self: stretch; width: calc(2 * var(--card-w) + var(--gap) + 2 * var(--margin) + 2px); min-height: calc(var(--card-h) + 2 * var(--margin) + 2px); }
+  .l::before, .r::before { font-size: 30px; }
+
+  /* Carta: altura padrão */
+  .card { flex: 0 0 auto; width: var(--card-w); height: var(--card-h); background: var(--card); color: var(--card-text); border: 1px solid var(--card-line); border-radius: 5px; padding: 6px; display: flex; flex-direction: column; justify-content: space-between; }
+  .card .name { font-weight: 700; font-size: 12px; }
+  .card .meta { font-size: 10px; color: #5a5a48; }
+  .card .tag { font-size: 10px; background: #d8cfae; border-radius: 3px; padding: 1px 4px; align-self: flex-start; margin-top: 2px; }
+  .card.fixed { background: #cfd8c4; border-color: #9fae92; }
+  .card.stacked { box-shadow: 0 0 0 2px var(--accent); } /* destaque estático da soma (W6) */
+  .card.open { outline: 2px solid var(--accent); }
+  .card.money { background: #c8dcc0; }
+  .card.place { background: #c4d3dc; border-color: #92a6b2; cursor: pointer; }
+  .card.place:hover { outline: 2px solid var(--accent); }
+  [hidden] { display: none !important; }
+  /* Dock: ícones grandes, suspensos no centro. Sem ampliar ao passar o mouse
+     (movimento reduzido): o destaque é só o contorno. */
+  .dock { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); display: flex; gap: 14px; padding: 10px 16px; background: rgba(38,48,42,.92); border: 1px solid var(--panel-line); border-radius: 16px; z-index: 2; }
+  .dock button { width: 64px; height: 64px; border-radius: 14px; background: #33423a; border: 2px solid transparent; cursor: pointer; display: grid; place-items: center; }
+  .dock button span { font-size: 34px; line-height: 1; }
+  .dock button:hover { border-color: var(--muted); }
+  .dock button[aria-pressed="true"] { border-color: var(--accent); background: #3d4d43; }
+
+  /* Coluna da engrenagem, à direita de tudo */
+  .gear { width: 30px; height: 30px; padding: 0; font-size: 16px; line-height: 1; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="main">
+    <div class="top">
+      <div class="info">
+        <span>Fazenda <b>12 / 100 m²</b></span>
+        <span><b>Dia 1, 06:00</b></span>
+      </div>
+      <button class="gear" title="Voltar ao menu">&#9881;</button>
+    </div>
+
+    <div class="table">
+      <div class="area t" data-name="Fazenda">
+        <div class="cards">
+          <div class="card fixed"><div><div class="name">Caixa de venda</div><span class="tag">fixa</span></div></div>
+          <div class="card fixed"><div><div class="name">Torneira</div><span class="tag">fixa</span></div></div>
+          <div class="card fixed"><div><div class="name">Caixa de correio</div><span class="tag">storage</span></div><div class="meta">1 nova</div></div>
+          <div class="card fixed"><div><div class="name">Terra bruta</div><span class="tag">fixa</span></div></div>
+          <div class="card"><div><div class="name">Terra arada x4</div></div><div class="meta">4 m²</div></div>
+        </div>
+      </div>
+
+      <div class="area l" id="area-hand" data-name="Mão">
+        <div class="cards">
+          <div class="card"><div><div class="name">Mochila</div><span class="tag">aberta</span></div></div>
+          <div class="card"><div><div class="name">Enxada</div><span class="tag">enferrujada</span></div><div class="meta">1200 g</div></div>
+          <div class="card"><div><div class="name">Regador</div><span class="tag">furado</span></div><div class="meta">2000/2000 água</div></div>
+          <div class="card money"><div><div class="name">Dinheiro</div></div><div class="meta">100</div></div>
+          <div class="card open"><div><div class="name">Baú</div><span class="tag">aberto</span></div></div>
+        </div>
+      </div>
+
+      <div class="c">
+        <!-- Dock suspenso: mapa, mão e mochila -->
+        <nav class="dock" aria-label="Atalhos">
+          <button id="dk-map" title="Mapa" aria-pressed="false"><span>&#128506;</span></button>
+          <button id="dk-hand" title="Mão" aria-pressed="true"><span>&#9995;</span></button>
+          <button id="dk-bag" title="Mochila" aria-pressed="true"><span>&#127890;</span></button>
+          <button id="dk-ground" title="Chão" aria-pressed="true"><span>&#127810;</span></button>
+        </nav>
+        <div class="area ground" id="area-ground" data-name="Chão">
+          <div class="cards">
+            <div class="card stacked"><div><div class="name">Colheita x3</div></div><div class="meta">600 g</div></div>
+            <div class="card"><div><div class="name">Madeira x2</div></div><div class="meta">4000 g</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contextual: storage aberto ou mapa de destinos -->
+      <div class="area r" id="ctx-storage" data-name="Baú 3,2 / 50 kg">
+        <div class="cards">
+          <div class="card"><div><div class="name">Sementes x5</div></div><div class="meta">25 g</div></div>
+          <div class="card"><div><div class="name">Pedra de afiar</div></div><div class="meta">300 g</div></div>
+          <div class="card"><div><div class="name">Óleo</div></div><div class="meta">200 g</div></div>
+        </div>
+      </div>
+      <div class="area r" id="ctx-map" data-name="Mapa" hidden>
+        <div class="cards">
+          <div class="card place"><div><div class="name">Roça</div><span class="tag">fazenda</span></div><div class="meta">0 min</div></div>
+          <div class="card place"><div><div class="name">Casa</div><span class="tag">fazenda</span></div><div class="meta">0 min</div></div>
+          <div class="card place"><div><div class="name">Floresta</div></div><div class="meta">30 min</div></div>
+          <div class="card place"><div><div class="name">Vila</div></div><div class="meta">15 min</div></div>
+          <div class="card place"><div><div class="name">Cidade</div></div><div class="meta">60 min</div></div>
+        </div>
+      </div>
+
+      <div class="area b" id="area-bag" data-name="Mochila 2,4 / 20 kg">
+        <div class="cards">
+          <div class="card"><div><div class="name">Martelo</div><span class="tag">ferramenta</span></div><div class="meta">700 g</div></div>
+          <div class="card"><div><div class="name">Pão x2</div></div><div class="meta">600 g</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+  // Só mostra ou esconde as áreas: sem animação.
+  const $ = id => document.getElementById(id);
+  const map = $('ctx-map'), box = $('ctx-storage');
+  function pressed(btn, on) { btn.setAttribute('aria-pressed', on); }
+  function showCtx(which) { map.hidden = which !== 'map'; box.hidden = which !== 'box'; pressed($('dk-map'), which === 'map'); }
+  $('dk-map').addEventListener('click', () => showCtx(map.hidden ? 'map' : 'box'));
+  $('dk-hand').addEventListener('click', () => { const a = $('area-hand'); a.hidden = !a.hidden; pressed($('dk-hand'), !a.hidden); });
+  $('dk-bag').addEventListener('click', () => { const a = $('area-bag'); a.hidden = !a.hidden; pressed($('dk-bag'), !a.hidden); });
+  $('dk-ground').addEventListener('click', () => { const a = $('area-ground'); a.hidden = !a.hidden; pressed($('dk-ground'), !a.hidden); });
+  document.querySelector('.card.open').addEventListener('click', () => showCtx('box'));
+  map.querySelectorAll('.place').forEach(c => c.addEventListener('click', () => showCtx('box')));
+</script>
+</body>
+</html>

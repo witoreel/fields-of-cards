@@ -26,7 +26,7 @@ Registro do que está implementado, do que ficou de fora e das decisões que tom
 - **US-1.7 / P5** (reabastecer o regador): não há como encher o regador; na simulação isso é suposto (`refill_water`).
 - **US-26.2**: o preço da pousada (30) é um palpite. **US-23.3**: a água dos animais não existe, só comida.
 - **AR9/AR10** (abrir o veículo da mão): o depósito do veículo só abre com a carta no local ou no chão.
-- Interface: funcional mas simples (botões, sem arte). Os diálogos e a tela não foram vistos por mim em execução.
+- Interface: segue o layout do `mockup/tela-jogo.html` (Local em cima, Mochila embaixo, Mão à esquerda, contexto à direita, Chão no centro, dock de ícones). Ao arrastar, uma cópia da carta acompanha o mouse; soltar sobre outra carta mostra contorno amarelo se houver receita. As observações do desenvolvedor estão em `observacoes.md`. Os diálogos e a tela não foram vistos por mim em execução.
 
 ## Valores provisórios (para balancear, Z7)
 Todos estão em dados ou em constantes comentadas.
@@ -52,7 +52,8 @@ Todos estão em dados ou em constantes comentadas.
 7. **Machado e serrote** têm a mesma receita (O que fazem de diferente é uma pergunta aberta).
 8. **Achados e perdidos** ficou na **vila** (Q1), e a cidade grande exige veículo (Q3); a "cidade" original continua sendo a cidade com ferragem e feira.
 9. **Pragas** só rodam em jogo com estado inicial (`pests_enabled`), para os testes de outras regras não dependerem do sorteio.
-10. O estado ganhou versões (hoje 3); saves antigos (v1 e v2) ainda carregam.
+10. **AR4 mudou**: o storage aberto aparece na área da direita e o local continua aberto (antes o storage tomava o lugar do local).
+11. O estado ganhou versões (hoje 3); saves antigos (v1 e v2) ainda carregam.
 
 ## Perguntas ao desenvolvedor (das "Estórias" com Depende)
 - Quanto de água cada m² precisa e como o regador reabastece (US-1.7, 5.4)? Qual loja vende sementes além do correio?

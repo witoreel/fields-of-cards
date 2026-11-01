@@ -16,7 +16,7 @@ Como ler:
 - AR1. As áreas de cartas são: mão, mochila, storage, local e stage (o chão).
 - AR2. As áreas não precisam estar todas visíveis ao mesmo tempo.
 - AR3. Selecionar a carta da mochila, que fica na área da mão, abre a mochila embaixo.
-- AR4. Selecionar a carta de um storage abre o storage em cima, no lugar do local.
+- AR4. Selecionar a carta de um storage abre o storage na área contextual (à direita), sem fechar o local. (Mudou do original, "em cima, no lugar do local", a pedido do desenvolvedor no layout da tela.)
 - AR5. O chão está sempre disponível.
 - AR6. Cartas móveis podem ser movidas entre as áreas abertas.
 - AR7. A área da mão, talvez na lateral, guarda os itens que o jogador segura (um ou dois) e a carta da mochila.

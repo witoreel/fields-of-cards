@@ -575,7 +575,7 @@ func is_open(area: StringName) -> bool:
 		STORAGE:
 			return open_storage_uid != 0
 		LOCATION:
-			return open_storage_uid == 0 # o storage aberto toma o lugar do local (AR4)
+			return true # o storage aberto vai para a área contextual, sem fechar o local (AR4)
 	return false
 
 

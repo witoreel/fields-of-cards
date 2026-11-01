@@ -65,7 +65,7 @@ func _initialize() -> void:
 
 	# Destaque de soma é só cor (W6)
 	var cv := FileAccess.get_file_as_string("res://ui/card_view.gd")
-	_check(cv.contains("modulate = Color") and not cv.contains("create_tween"), "destaque de soma estático")
+	_check(cv.contains("stacked") and not cv.contains("create_tween"), "destaque de soma estático")
 	_finish()
 
 
