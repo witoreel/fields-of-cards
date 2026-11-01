@@ -78,21 +78,4 @@ static func run_helpers(state: GameState) -> void:
 			var rule: Dictionary = state.def_of(h).extra.get("helper", {})
 			if not Economy.spend(state, int(rule.get("wage", 0))):
 				continue # sem pagar o ajudante não trabalha
-			var capacity := int(rule.get("m2_per_day", 4))
-			for c in state.cards[String(loc)]:
-				if capacity <= 0:
-					break
-				if c["id"] in ["terra_semeada", "terra_broto"] and not c.get("state", {}).get("watered", false):
-					var list: Array = state.cards[String(loc)]
-					if int(c["n"]) > capacity:
-						# Só rega parte da pilha: separa os m² regados.
-						var part := state.new_card(StringName(c["id"]), capacity)
-						part["state"] = c.get("state", {}).duplicate()
-						c["n"] = int(c["n"]) - capacity
-						list.append(part)
-						c = part
-					capacity -= int(c["n"])
-					var st: Dictionary = c.get("state", {}).duplicate()
-					st["watered"] = true
-					c["state"] = st
-			state.restack(state.cards[String(loc)])
+			Machines.water(state, loc, int(rule.get("m2_per_day", 4)))

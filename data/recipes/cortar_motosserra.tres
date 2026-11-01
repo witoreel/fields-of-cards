@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="RecipeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/recipe_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"cortar_motosserra"
+a = &"motosserra"
+b = &"arvore"
+a_use = 0
+b_use = 0
+minutes = 30
+results = [{"id": "madeira", "scaled": true, "n": 1}]
+set_state_b = {}
+a_wear = 2
+a_edge_wear = 2
+variable = true
+activity = &"madeira"

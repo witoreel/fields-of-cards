@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"serra_circular"
+display_name = "Serra circular de bancada"
+props = PackedStringArray("tool", "machine")
+weight = 0
+extra = {"price": 1500, "shop": "cidade_grande", "quality": 1.5, "machine": {"fuel_per_use": 2, "time_mult": 0.5}}

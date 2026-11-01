@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lavadora"
+display_name = "Lavadora de alta pressão"
+props = PackedStringArray("tool", "machine", "movable")
+weight = 7000
+extra = {"price": 600, "shop": "cidade_grande", "quality": 1.0, "machine": {"fuel_per_use": 1, "time_mult": 0.5}}

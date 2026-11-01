@@ -29,7 +29,7 @@ static func edge(card: Dictionary) -> int:
 static func time_factor(state: GameState, tool_card: Dictionary) -> float:
 	if tool_card.is_empty() or not state.has_prop(tool_card, &"tool"):
 		return 1.0
-	var f := 1.0 + (1.0 - float(durability(tool_card)) / MAX) * SLOWDOWN
+	var f := (1.0 + (1.0 - float(durability(tool_card)) / MAX) * SLOWDOWN) * Machines.time_factor(state, tool_card)
 	if state.has_prop(tool_card, &"cutting"):
 		f *= 1.0 + (1.0 - float(edge(tool_card)) / MAX) * EDGE_SLOWDOWN
 	return f

@@ -57,7 +57,7 @@ static func trip_minutes(state: GameState, base: int, commit: bool) -> int:
 		var st: Dictionary = v["state"].duplicate(true)
 		st["fuel"] = fuel_of(v) - int(r.get("fuel_per_trip", 1))
 		v["state"] = st
-	return maxi(1, ceili(base * float(r.get("travel_mult", 1.0))))
+	return maxi(1, ceili(base * float(r.get("travel_mult", 1.0)) - 0.0001))
 
 
 ## Há um veículo utilizável com o jogador? A cidade grande exige (Q3).

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"gerador"
+display_name = "Gerador"
+props = PackedStringArray("machine", "fixed")
+weight = 0
+extra = {"price": 2200, "shop": "cidade_grande", "m2": 1, "machine": {"fuel_per_use": 1}}

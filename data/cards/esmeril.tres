@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"esmeril"
+display_name = "Esmeril"
+props = PackedStringArray("tool", "machine", "movable")
+weight = 8000
+extra = {"price": 500, "shop": "cidade", "quality": 1.0, "machine": {"fuel_per_use": 1, "time_mult": 0.5}}

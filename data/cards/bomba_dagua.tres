@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"bomba_dagua"
+display_name = "Bomba d'água"
+props = PackedStringArray("machine", "pump", "movable")
+weight = 9000
+extra = {"price": 900, "shop": "cidade", "machine": {"fuel_per_use": 2}}

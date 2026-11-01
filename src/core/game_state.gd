@@ -158,6 +158,7 @@ func _on_woke_up(_day: int) -> void:
 func _on_day_ended(_day: int) -> void:
 	last_events.clear()
 	Pests.run_helpers(self) # a rega do ajudante conta para o crescimento da noite
+	Machines.on_day_start_of_night(self) # e a da irrigação
 	Farming.on_day_end(self)
 	Economy.on_day_end(self)
 	Animals.on_day_end(self)
@@ -410,7 +411,7 @@ func travel_to(id: StringName) -> bool:
 	# combustível (Q6, Q8). Se a meia-noite cair no caminho, o dia acaba e o
 	# jogador acorda às 06:00 já no destino.
 	var base := Vehicles.trip_minutes(self, travel_minutes(current_location, id), true)
-	advance_time(ceili(base * buff_multiplier("time_mult")))
+	advance_time(ceili(base * buff_multiplier("time_mult") - 0.0001))
 	current_location = id
 	arrived.emit(id)
 	areas_changed.emit()

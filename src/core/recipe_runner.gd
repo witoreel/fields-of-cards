@@ -13,6 +13,8 @@ static func max_units(state: GameState, r: RecipeDef, a: Dictionary, b: Dictiona
 		most = mini(most, int(a["n"]) / r.a_use)
 	if r.b_use > 0:
 		most = mini(most, int(b["n"]) / r.b_use)
+	if Machines.is_machine(state, a):
+		most = mini(most, Vehicles.fuel_of(a) / Machines.fuel_per_use(state, a))
 	var water_per := r.a_volume_per_b * int(b.get("n", 1))
 	if water_per > 0:
 		most = mini(most, state.volume_of(a) / water_per)
@@ -20,7 +22,7 @@ static func max_units(state: GameState, r: RecipeDef, a: Dictionary, b: Dictiona
 		var delta := _area_delta(state, r, a, b, 1)
 		if delta > 0:
 			most = mini(most, state.farm_area_free() / delta)
-	var per_unit := maxi(1, ceili(r.minutes * Wear.time_factor(state, a) * state.buff_multiplier("time_mult")))
+	var per_unit := maxi(1, ceili(r.minutes * Wear.time_factor(state, a) * state.buff_multiplier("time_mult") - 0.0001))
 	var left := GameState.MINUTES_PER_DAY - state.minute_of_day()
 	most = mini(most, maxi(1, left / per_unit))
 	return maxi(1, most)
@@ -59,12 +61,17 @@ static func run(state: GameState, r: RecipeDef, a: Dictionary, b: Dictionary, ar
 	if state.root_of(state.current_location) == &"fazenda":
 		if _area_delta(state, r, a, b, units) > state.farm_area_free():
 			return false
+	var fuel_needed := Machines.fuel_per_use(state, a) * units if Machines.is_machine(state, a) else 0
+	if fuel_needed > 0 and Vehicles.fuel_of(a) < fuel_needed:
+		return false # a máquina precisa de combustível (X1)
 	var water_needed := r.a_volume_per_b * int(b.get("n", 1)) * units
 	if water_needed > 0:
 		if state.volume_of(a) < water_needed:
 			return false
 		a["state"] = a.get("state", {}).duplicate()
 		a["state"]["volume"] = state.volume_of(a) - water_needed
+	if fuel_needed > 0:
+		Machines.spend_fuel(a, fuel_needed)
 	var factor := Wear.time_factor(state, a) * state.buff_multiplier("time_mult")
 	# Estados da ferramenta e do alvo que a receita muda (S1, G1, G4).
 	Wear.apply_use(state, a, r.a_wear * units, r.a_edge_wear * units)
@@ -98,7 +105,7 @@ static func run(state: GameState, r: RecipeDef, a: Dictionary, b: Dictionary, ar
 		state.spawn(StringName(res["id"]), dest, _result_n(res, units, mult))
 	if r.activity != &"":
 		state.add_skill(r.activity, units)
-	state.advance_time(ceili(r.minutes * units * factor)) # T1, mais lento com a ferramenta gasta (G1)
+	state.advance_time(ceili(r.minutes * units * factor - 0.0001)) # T1, mais lento com a ferramenta gasta (G1)
 	state.areas_changed.emit()
 	return true
 
