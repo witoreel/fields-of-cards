@@ -5,6 +5,8 @@ extends Control
 const MENU_SCENE := "res://ui/main_menu.tscn"
 
 var _draft: VideoSettings
+var _comfort: ComfortSettings
+var _motion_check: CheckBox
 var _screen_option: OptionButton
 var _mode_option: OptionButton
 var _resolution_option: OptionButton
@@ -18,6 +20,7 @@ var _building := true
 
 func _ready() -> void:
 	_draft = VideoSettings.load_from()
+	_comfort = ComfortSettings.current().duplicate_settings()
 	_draft.sanitize(DisplayServer.get_screen_count(),
 		DisplayServer.screen_get_size(_clamped_screen(_draft.screen)))
 
@@ -55,6 +58,13 @@ func _ready() -> void:
 	_vsync_check = CheckBox.new()
 	_vsync_check.text = "Ligado"
 	grid.add_child(_vsync_check)
+
+	_add_caption(grid, "Movimento reduzido")
+	_motion_check = CheckBox.new()
+	_motion_check.text = "Sem animações"
+	_motion_check.button_pressed = _comfort.reduced_motion
+	_motion_check.toggled.connect(func(pressed: bool) -> void: _comfort.reduced_motion = pressed)
+	grid.add_child(_motion_check)
 
 	_fill_screens()
 	_mode_option.add_item("Janela", VideoSettings.MODE_WINDOWED)
@@ -170,6 +180,9 @@ func _on_vsync_toggled(pressed: bool) -> void:
 func _on_apply_pressed() -> void:
 	_draft.apply()
 	var err := _draft.save_to()
+	ComfortSettings.set_current(_comfort.duplicate_settings())
+	if _comfort.save_to() != OK:
+		err = ERR_FILE_CANT_WRITE
 	_refresh_from_draft()
 	_status_label.text = "Configurações aplicadas." if err == OK \
 		else "Aplicadas, mas não foi possível salvar."

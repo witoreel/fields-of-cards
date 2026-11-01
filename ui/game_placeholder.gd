@@ -106,6 +106,9 @@ func _rebuild() -> void:
 		_shop_box.add_child(b)
 	for area in _views:
 		var v: AreaView = _views[area]
+		var was_visible := v.visible
 		v.visible = state.is_open(area)
+		if v.visible and not was_visible:
+			Motion.reveal(v) # aparecer é curto; com movimento reduzido, instantâneo (W5)
 		if v.visible:
 			v.show_area(area, AREA_TITLES[area], state)
