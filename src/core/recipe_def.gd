@@ -12,7 +12,8 @@ extends Resource
 @export var a_use: int = 0
 @export var b_use: int = 0
 @export var minutes: int = 0
-## Cartas criadas: [{"id": "madeira", "n": 1}]. Vão para a área do alvo.
+## Cartas criadas: [{"id": "madeira", "n": 1, "scaled": true}]. Vão para a
+## área do alvo. Em "scaled", a quantidade vale vezes o multiplicador (V3-V5).
 @export var results: Array = []
 ## Estado acrescentado à carta alvo, por exemplo {"watered": true}.
 @export var set_state_b: Dictionary = {}
@@ -35,3 +36,6 @@ extends Resource
 ## jogador escolhe quantas unidades fazer. Consumo, resultado, desgaste e
 ## volume gasto crescem na mesma proporção.
 @export var variable: bool = false
+
+## Atividade da receita, para a skill (V4): "lavoura", "madeira"... Vazio = sem skill.
+@export var activity: StringName = &""

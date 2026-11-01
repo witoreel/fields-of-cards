@@ -33,10 +33,16 @@ static func units_for_minutes(r: RecipeDef, minutes: int) -> int:
 	return maxi(1, minutes / r.minutes)
 
 
+static func _result_n(res: Dictionary, units: int, mult: float) -> int:
+	var base := int(res.get("n", 1)) * units
+	return Multipliers.scaled(base, mult) if res.get("scaled", false) else base
+
+
 static func _area_delta(state: GameState, r: RecipeDef, a: Dictionary, b: Dictionary, units: int) -> int:
 	var delta := 0
+	var mult := Multipliers.total(state, a, r.activity)
 	for res in r.results:
-		delta += int(state.catalog.get_def(StringName(res["id"])).extra.get("m2", 0)) * int(res.get("n", 1)) * units
+		delta += int(state.catalog.get_def(StringName(res["id"])).extra.get("m2", 0)) * _result_n(res, units, mult)
 	if r.a_use > 0:
 		delta -= state.card_area(a) / int(a["n"]) * r.a_use * units
 	if r.b_use > 0:
@@ -81,8 +87,11 @@ static func run(state: GameState, r: RecipeDef, a: Dictionary, b: Dictionary, ar
 		b["state"] = st
 		# A carta mudou de identidade: pode precisar somar ou separar.
 		state.restack(state.area_cards(area_b))
+	var mult := Multipliers.total(state, a, r.activity)
 	for res in r.results:
-		state.spawn(StringName(res["id"]), area_b, int(res.get("n", 1)) * units)
+		state.spawn(StringName(res["id"]), area_b, _result_n(res, units, mult))
+	if r.activity != &"":
+		state.add_skill(r.activity, units)
 	state.advance_time(ceili(r.minutes * units * factor)) # T1, mais lento com a ferramenta gasta (G1)
 	state.areas_changed.emit()
 	return true

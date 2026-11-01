@@ -13,3 +13,4 @@ minutes = 10
 a_volume_per_b = 50
 results = []
 set_state_b = {"watered": true}
+activity = &"lavoura"

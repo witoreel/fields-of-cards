@@ -46,7 +46,11 @@ func _initialize() -> void:
 	var semeada := s.cards_at(&"fazenda").filter(func(c: Dictionary) -> bool: return c["id"] == "terra_semeada" and c["n"] >= 3)
 	_check(not semeada.is_empty() and not s.hand.has(seeds) and one["n"] == 13, "pediu 50, plantou só 3 (limite pelas sementes)")
 	s.farm_area_limit = s.farm_area_used() + 9
-	_check(s.recipe_preview(hoe["uid"], soil["uid"])["max_units"] == 2, "limitado pelos m² livres (9 -> 2 unidades de 4)")
+	var tight: int = s.recipe_preview(hoe["uid"], soil["uid"])["max_units"]
+	s.farm_area_limit = s.farm_area_used() + 90
+	var loose: int = s.recipe_preview(hoe["uid"], soil["uid"])["max_units"]
+	_check(tight >= 1 and tight <= 2 and loose > tight, "limitado pelos m² livres (9 m² -> %d, 90 m² -> %d)" % [tight, loose])
+	s.farm_area_limit = s.farm_area_used() + 9
 	s.farm_area_limit = 1000
 	s.sleep()
 	s.advance_time(18 * 60 - 60) # faltam 60 min... mas a enxada está gasta

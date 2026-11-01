@@ -32,7 +32,7 @@ func _initialize() -> void:
 	var hoe := s.spawn(&"enxada", GameState.LOCATION)
 	_check(not s.apply_recipe(hoe["uid"], box["uid"]), "enxada não tem valor de venda")
 	_check(s.apply_recipe(crop["uid"], box["uid"]), "vende a colheita arrastando para a caixa")
-	_check(s.money() == 50 and not s.cards_at(&"fazenda").has(crop), "5 × 10 = 50 e a pilha sumiu")
+	_check(s.money() == 40 and not s.cards_at(&"fazenda").has(crop), "5 × 10 × 0,8 (caixa) = 40 e a pilha sumiu")
 	_check(not s.sell(hoe["uid"], hoe["uid"]), "só caixa de venda compra")
 
 	# US-7.3: conta tem prazo e valor
@@ -45,11 +45,11 @@ func _initialize() -> void:
 	var t := s.minutes
 	s.travel_to(&"cidade")
 	_check(s.minutes == t + 60, "ir à cidade custou 60 min")
-	_check(s.pay_bill(bill["uid"]) and s.money() == 20, "pagou 30")
+	_check(s.pay_bill(bill["uid"]) and s.money() == 10, "pagou 30")
 	_check(Economy.open_bills(s).is_empty(), "conta paga some")
 	var bill2 := s.issue_bill(500, s.minutes + 100)
 	_check(not s.pay_bill(bill2["uid"]), "sem dinheiro suficiente não paga")
-	_check(Economy.open_bills(s).size() == 1 and s.money() == 20, "nada mudou")
+	_check(Economy.open_bills(s).size() == 1 and s.money() == 10, "nada mudou")
 
 	# US-7.5: atraso gera multa, não game over
 	s.sleep()
@@ -63,9 +63,9 @@ func _initialize() -> void:
 	s.select_card(s.hand[0]["uid"])
 	var cash2: Dictionary = s.hand.filter(func(c: Dictionary) -> bool: return c["id"] == "dinheiro")[0]
 	s.move_card(cash2["uid"], GameState.BACKPACK)
-	_check(s.money() == 20, "dinheiro na mochila conta")
-	_check(Economy.spend(s, 15) and s.money() == 5, "gasta")
-	_check(not Economy.spend(s, 6), "não gasta mais do que tem")
+	_check(s.money() == 10, "dinheiro na mochila conta")
+	_check(Economy.spend(s, 7) and s.money() == 3, "gasta")
+	_check(not Economy.spend(s, 4), "não gasta mais do que tem")
 	var r := GameState.from_dict(JSON.parse_string(JSON.stringify(s.to_dict())))
-	_check(r.money() == 5 and Economy.open_bills(r).size() == 1, "dinheiro e contas sobrevivem ao save")
+	_check(r.money() == 3 and Economy.open_bills(r).size() == 1, "dinheiro e contas sobrevivem ao save")
 	_finish()

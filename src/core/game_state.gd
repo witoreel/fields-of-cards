@@ -59,6 +59,8 @@ const TIRED_MINUTE := 1320 # 22:00 (T9)
 
 ## Minutos desde o início do dia 1, 00:00. O jogo começa às 06:00 do dia 1.
 var minutes := WAKE_MINUTE
+## Pontos de skill por atividade (K1): {"lavoura": 12}.
+var skills: Dictionary = {}
 ## Buffs e debuffs do jogador, como na carta (C9). Formato livre.
 var player_buffs: Array = []
 ## Eventos agendados (T3): {at, kind, data}, guardados no save.
@@ -145,7 +147,7 @@ func _apply_initial_state() -> void:
 		return
 	for entry in data.get("new_locations", []):
 		add_location(StringName(entry["id"]), entry["name"], StringName(entry["parent"]),
-			{"damaged": entry.get("damaged", false)})
+			{"damaged": entry.get("damaged", false), "multiplier": entry.get("multiplier", 1.0)})
 		_fill(cards[entry["id"]], entry.get("cards", []))
 	_fill(hand, data.get("hand", []))
 	for loc in data.get("locations", {}):
@@ -598,6 +600,7 @@ func card_area(card: Dictionary) -> int:
 func farm_area_used() -> int:
 	var total := 0
 	for id in farm_locations():
+		total += int(extra_locations.get(String(id), {}).get("m2", 0)) # construções ocupam m² (B4)
 		for c in cards[String(id)]:
 			total += card_area(c)
 		for c in stages[String(id)]:
@@ -659,6 +662,54 @@ func area_limit(area: StringName) -> int:
 	if holder.is_empty():
 		return 0
 	return int(def_of(holder).extra.get("weight_limit", 0))
+
+
+# --- Skills e multiplicadores ----------------------------------------------
+
+## Pontos de skill numa atividade (K1). Cada ponto vale menos que o anterior
+## (K3, ver Multipliers).
+func add_skill(activity: StringName, points: int) -> void:
+	skills[String(activity)] = int(skills.get(String(activity), 0)) + points
+
+
+## Produto de um campo numérico dos buffs e debuffs do jogador (1.0 se ninguém tem).
+func buff_multiplier(key: String) -> float:
+	var m := 1.0
+	for b in player_buffs:
+		m *= float(b.get(key, 1.0))
+	return m
+
+
+## Comando: transforma uma carta de construção num local novo (R8, L6).
+## A carta precisa ter extra["builds"] = {parent, multiplier, m2}. Devolve o
+## id do local criado, ou &"" se não deu.
+func build_location(uid: int, display_name: String) -> StringName:
+	if is_game_over:
+		return &""
+	var l := find_card(uid)
+	if l.is_empty() or display_name.strip_edges() == "":
+		return &""
+	var card: Dictionary = area_cards(l["area"])[l["index"]]
+	var d := def_of(card)
+	if d == null or not d.extra.has("builds"):
+		return &""
+	var b: Dictionary = d.extra["builds"]
+	var id := StringName("%s_%d" % [String(b.get("kind", "local")), next_uid])
+	next_uid += 1
+	if not add_location(id, display_name.strip_edges(), StringName(b["parent"]),
+			{"multiplier": b.get("multiplier", 1.0), "m2": b.get("m2", 0)}):
+		return &""
+	_consume_card_for_build(l)
+	areas_changed.emit()
+	return id
+
+
+func _consume_card_for_build(l: Dictionary) -> void:
+	var list := area_cards(l["area"])
+	var card: Dictionary = list[l["index"]]
+	card["n"] = int(card["n"]) - 1
+	if card["n"] <= 0:
+		list.remove_at(l["index"])
 
 
 # --- Falência -------------------------------------------------------------
@@ -865,6 +916,7 @@ func to_dict() -> Dictionary:
 		"next_uid": next_uid,
 		"minutes": minutes,
 		"farm_area_limit": farm_area_limit,
+		"skills": skills.duplicate(true),
 		"bankruptcy_debt_limit": bankruptcy_debt_limit,
 		"game_over_reason": game_over_reason,
 		"is_game_over": is_game_over,
@@ -920,6 +972,11 @@ static func from_dict(data: Variant) -> GameState:
 	s.next_uid = int(data.get("next_uid", 1))
 	s.minutes = int(data.get("minutes", WAKE_MINUTE))
 	s.farm_area_limit = int(data.get("farm_area_limit", 100))
+	var sk = data.get("skills", {})
+	if not (sk is Dictionary):
+		return null
+	for k in sk:
+		s.skills[String(k)] = int(sk[k])
 	s.bankruptcy_debt_limit = int(data.get("bankruptcy_debt_limit", 0))
 	s.is_game_over = bool(data.get("is_game_over", false))
 	s.game_over_reason = str(data.get("game_over_reason", ""))

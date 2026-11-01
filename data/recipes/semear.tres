@@ -13,3 +13,4 @@ minutes = 10
 results = [{"id": "terra_semeada", "n": 1}]
 set_state_b = {}
 variable = true
+activity = &"lavoura"

@@ -66,7 +66,10 @@ static func sell(state: GameState, uid: int, box_uid: int) -> bool:
 	var d := state.def_of(card)
 	if d == null or not d.extra.has("sell_value"):
 		return false
-	var value := int(d.extra["sell_value"]) * int(card["n"])
+	# Cada canal de venda tem o seu multiplicador (E2, E3).
+	var box_def := state.def_of(box)
+	var mult := float(box_def.extra.get("sell_multiplier", 1.0)) if box_def != null else 1.0
+	var value := roundi(int(d.extra["sell_value"]) * int(card["n"]) * mult)
 	state.area_cards(l["area"]).remove_at(l["index"])
 	give(state, value)
 	state.areas_changed.emit()

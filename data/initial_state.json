@@ -8,10 +8,11 @@
 	],
 	"locations": {
 		"fazenda": [{"id": "caixa_venda"}, {"id": "torneira"}],
-		"floresta": [{"id": "arvore"}]
+		"floresta": [{"id": "arvore"}],
+		"feira": [{"id": "banca_feira"}]
 	},
 	"new_locations": [
-		{"id": "roca", "name": "Roça", "parent": "fazenda", "damaged": true,
+		{"id": "roca", "name": "Roça", "parent": "fazenda", "damaged": true, "multiplier": 1.0,
 		 "cards": [{"id": "terra_bruta"}]}
 	]
 }

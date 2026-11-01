@@ -8,4 +8,4 @@ id = &"caixa_venda"
 display_name = "Caixa de venda"
 props = PackedStringArray("fixed", "sell_box")
 weight = 0
-extra = {}
+extra = {"sell_multiplier": 0.8}
