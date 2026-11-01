@@ -8,4 +8,4 @@ id = &"terra_arada"
 display_name = "Terra arada"
 props = PackedStringArray("stackable")
 weight = 0
-extra = {}
+extra = {"m2": 1}

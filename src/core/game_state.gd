@@ -70,6 +70,10 @@ const TRAVEL_MINUTES := {
 	&"floresta|cidade": 90,
 }
 
+## Limite de m² da fazenda, somando todos os seus locais (L7). Valor
+## provisório; cresce por expansão no futuro.
+var farm_area_limit := 100
+
 var current_location: StringName = START_LOCATION
 ## location_id (String) -> Array[Dictionary] de cartas, na ordem.
 var cards: Dictionary = {}
@@ -471,6 +475,39 @@ func move_card(uid: int, to_area: StringName, index: int = -1) -> bool:
 	return true
 
 
+# --- Área da fazenda ------------------------------------------------------
+
+## A fazenda e todos os locais dentro dela (casa, roças, galinheiro...) (L6).
+func farm_locations() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for id in location_ids():
+		if root_of(id) == &"fazenda":
+			out.append(id)
+	return out
+
+
+## m² que uma carta ocupa na fazenda (N3): extra["m2"] por unidade × quantidade.
+## Terra bruta, árvores e água de riacho não ocupam (N1, N2).
+func card_area(card: Dictionary) -> int:
+	var d := def_of(card)
+	return int(d.extra.get("m2", 0)) * int(card.get("n", 1)) if d != null else 0
+
+
+## m² usados hoje na fazenda, somando todos os seus locais (L7).
+func farm_area_used() -> int:
+	var total := 0
+	for id in farm_locations():
+		for c in cards[String(id)]:
+			total += card_area(c)
+		for c in stages[String(id)]:
+			total += card_area(c)
+	return total
+
+
+func farm_area_free() -> int:
+	return farm_area_limit - farm_area_used()
+
+
 # --- Peso e volume --------------------------------------------------------
 
 ## Volume atual de um recipiente como o regador (P5), em gramas. Sem estado
@@ -556,6 +593,18 @@ func use_card(uid: int) -> bool:
 func _run(r: RecipeDef, a: Dictionary, b: Dictionary, area_b: StringName) -> bool:
 	if (r.a_use > 0 and int(a["n"]) < r.a_use) or (r.b_use > 0 and int(b["n"]) < r.b_use):
 		return false
+	# Ocupar m² além do limite da fazenda não é permitido (L7). Conta o saldo
+	# entre o que a receita cria e o que consome.
+	if root_of(current_location) == &"fazenda":
+		var delta := 0
+		for res in r.results:
+			delta += int(catalog.get_def(StringName(res["id"])).extra.get("m2", 0)) * int(res.get("n", 1))
+		if r.a_use > 0:
+			delta -= card_area(a) / int(a["n"]) * r.a_use
+		if r.b_use > 0:
+			delta -= card_area(b) / int(b["n"]) * r.b_use
+		if delta > farm_area_free():
+			return false
 	var water_needed := r.a_volume_per_b * int(b.get("n", 1))
 	if water_needed > 0:
 		if volume_of(a) < water_needed:
@@ -652,6 +701,7 @@ func to_dict() -> Dictionary:
 		"open_storage_uid": open_storage_uid,
 		"next_uid": next_uid,
 		"minutes": minutes,
+		"farm_area_limit": farm_area_limit,
 		"player_buffs": player_buffs.duplicate(true),
 		"scheduled": scheduled.duplicate(true),
 		# Inteiros de 64 bits viram texto: JSON só garante 53 bits.
@@ -703,6 +753,7 @@ static func from_dict(data: Variant) -> GameState:
 	s.open_storage_uid = int(data.get("open_storage_uid", 0))
 	s.next_uid = int(data.get("next_uid", 1))
 	s.minutes = int(data.get("minutes", WAKE_MINUTE))
+	s.farm_area_limit = int(data.get("farm_area_limit", 100))
 	var pb = data.get("player_buffs", [])
 	var sc = data.get("scheduled", [])
 	if not (pb is Array) or not (sc is Array):

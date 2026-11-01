@@ -8,4 +8,4 @@ id = &"terra_semeada"
 display_name = "Terra semeada"
 props = PackedStringArray("stackable")
 weight = 0
-extra = {"grow": {"days": 1, "to": "terra_broto"}}
+extra = {"m2": 1, "grow": {"days": 1, "to": "terra_broto"}}
