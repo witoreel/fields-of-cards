@@ -19,13 +19,23 @@ static func _find(state: GameState, id: String) -> Dictionary:
 func play_day(state: GameState) -> void:
 	if state.is_game_over:
 		return
-	var letter := _find(state, "carta_boas_vindas")
-	if not letter.is_empty():
-		state.select_card(letter["uid"])
+	_read_mail(state)
 	_farm(state)
 	_sell(state)
 	_pay(state)
 	state.sleep()
+
+
+func _read_mail(state: GameState) -> void:
+	state.travel_to(&"fazenda")
+	var box := _find(state, "caixa_correio")
+	if box.is_empty() or Mail.unread(state) == 0:
+		return
+	state.select_card(box["uid"]) # abre
+	for letter in state.area_cards(GameState.STORAGE).duplicate():
+		if not letter.get("state", {}).get("read", false):
+			state.select_card(letter["uid"])
+	state.select_card(box["uid"]) # fecha
 
 
 func _farm(state: GameState) -> void:

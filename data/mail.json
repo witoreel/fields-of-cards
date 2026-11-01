@@ -1,0 +1,9 @@
+[
+	{"day": 2, "title": "Dica: regar",
+	 "text": "Plantas só crescem se forem regadas no dia. Sem rega, o crescimento fica parado."},
+	{"day": 3, "title": "Dica: dormir",
+	 "text": "Passar das 22:00 acordado deixa você cansado no dia seguinte."},
+	{"day": 4, "title": "Promoção de enxadas",
+	 "text": "Enxadas com 20% de desconto por 3 dias na ferragem.",
+	 "promo": {"item": "enxada", "percent": 20, "days": 3}}
+]

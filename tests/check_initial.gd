@@ -28,12 +28,16 @@ func _initialize() -> void:
 	_check(s.cards_at(&"fazenda").any(func(c: Dictionary) -> bool: return c["id"] == "caixa_venda"), "caixa de venda na fazenda")
 
 	# I3: carta de boas-vindas com sementes anexas; ler não gasta tempo
-	var letter: Dictionary = s.hand.filter(func(c: Dictionary) -> bool: return c["id"] == "carta_boas_vindas")[0]
+	var mailbox: Dictionary = s.cards_at(&"fazenda").filter(func(c: Dictionary) -> bool: return c["id"] == "caixa_correio")[0]
+	_check(s.select_card(mailbox["uid"]), "abre a caixa de correio")
+	var letter: Dictionary = s.area_cards(GameState.STORAGE)[0]
+	_check(letter["state"]["title"] == "Bem-vindo à fazenda" and s.area_cards(GameState.STORAGE).size() == 1, "a primeira carta é a de boas-vindas")
 	_check(not _ids(s.hand).has("semente"), "sementes ainda não estão na mão")
 	var t := s.minutes
 	_check(s.select_card(letter["uid"]), "ler a carta")
 	_check(_ids(s.hand).has("semente") and s.minutes == t, "sementes anexas, sem gastar tempo (M2)")
 	_check(not s.select_card(letter["uid"]), "ler de novo não dá mais sementes")
+	s.select_card(mailbox["uid"]) # fecha a caixa
 	var seeds: Dictionary = s.hand.filter(func(c: Dictionary) -> bool: return c["id"] == "semente")[0]
 	_check(seeds["n"] == 5, "5 sementes")
 

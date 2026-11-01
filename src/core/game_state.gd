@@ -59,6 +59,16 @@ const TIRED_MINUTE := 1320 # 22:00 (T9)
 
 ## Minutos desde o início do dia 1, 00:00. O jogo começa às 06:00 do dia 1.
 var minutes := WAKE_MINUTE
+## Correspondência que ainda vai chegar (T6): {day, title, text, ...}.
+var mail_queue: Array = []
+## Promoções ativas (M5): {item, percent, until_day}.
+var promotions: Array = []
+## Última carta lida, para a interface mostrar o texto: {title, text}.
+var last_read: Dictionary = {}
+## Locais e itens liberados (U1). Só valem os que estão em `gated`.
+var unlocked: Array = []
+## Ids que começam bloqueados (U1, U2). Vazio = nada bloqueado.
+var gated: Array = []
 ## Pontos de skill por atividade (K1): {"lavoura": 12}.
 var skills: Dictionary = {}
 ## Buffs e debuffs do jogador, como na carta (C9). Formato livre.
@@ -109,6 +119,12 @@ var recipes: RecipeCatalog = RecipeCatalog.default()
 
 func _init() -> void:
 	day_ended.connect(_on_day_ended)
+	woke_up.connect(_on_woke_up)
+
+
+## Quando o jogador acorda chega a correspondência (T6).
+func _on_woke_up(_day: int) -> void:
+	Mail.deliver(self)
 
 
 ## Sistemas que rodam na virada do dia. É um método (não uma lambda) para
@@ -152,6 +168,7 @@ func _apply_initial_state() -> void:
 	_fill(hand, data.get("hand", []))
 	for loc in data.get("locations", {}):
 		_fill(cards[loc], data["locations"][loc])
+	mail_queue = Mail.load_schedule()
 
 
 func _fill(list: Array, entries: Array) -> void:
@@ -161,6 +178,7 @@ func _fill(list: Array, entries: Array) -> void:
 			c["state"] = e["state"].duplicate(true)
 		if catalog.get_def(StringName(e["id"])).props.has("storage"):
 			storages[str(c["uid"])] = []
+			_fill(storages[str(c["uid"])], e.get("contents", []))
 		list.append(c)
 
 
@@ -879,19 +897,37 @@ func select_card(uid: int) -> bool:
 	return use_card(uid)
 
 
-## Lê uma carta de correspondência (M2): não gasta tempo, e o item anexo
-## vai para a mão (M4; o destino é uma pendência). Ler de novo não faz nada.
+## Lê uma carta de correspondência (M2): não gasta tempo. O item anexo vai
+## para a mão (M4; o destino é uma pendência), uma promoção passa a valer
+## (M5) e a carta pode liberar coisas (U1). Ler de novo não faz nada.
 func read_letter(card: Dictionary) -> bool:
 	var st: Dictionary = card.get("state", {})
 	if st.get("read", false):
+		last_read = {"title": st.get("title", ""), "text": st.get("text", "")}
+		areas_changed.emit()
 		return false
 	st["read"] = true
 	card["state"] = st
+	last_read = {"title": st.get("title", ""), "text": st.get("text", "")}
 	for att in st.get("attachments", []):
-		spawn(StringName(att["id"]), HAND, int(att.get("n", 1)))
+		if att.has("bill"):
+			Economy.issue_bill(self, int(att["bill"]["amount"]), minutes + int(att["bill"]["due_days"]) * MINUTES_PER_DAY)
+		else:
+			spawn(StringName(att["id"]), HAND, int(att.get("n", 1)))
 	st.erase("attachments")
+	if st.has("promo"):
+		var p: Dictionary = st["promo"]
+		promotions.append({"item": p["item"], "percent": int(p["percent"]), "until_day": day_number() + int(p["days"])})
+	for id in st.get("unlock", []):
+		unlock(StringName(id))
 	areas_changed.emit()
 	return true
+
+
+## Libera um local ou item (U1). A progressão usa isto (feature 18).
+func unlock(id: StringName) -> void:
+	if not unlocked.has(String(id)):
+		unlocked.append(String(id))
 
 
 ## A roça ou outro local está danificado (I2)?
@@ -940,6 +976,11 @@ func to_dict() -> Dictionary:
 		"minutes": minutes,
 		"farm_area_limit": farm_area_limit,
 		"skills": skills.duplicate(true),
+		"mail_queue": mail_queue.duplicate(true),
+		"promotions": promotions.duplicate(true),
+		"last_read": last_read.duplicate(true),
+		"unlocked": unlocked.duplicate(),
+		"gated": gated.duplicate(),
 		"bankruptcy_debt_limit": bankruptcy_debt_limit,
 		"game_over_reason": game_over_reason,
 		"is_game_over": is_game_over,
@@ -995,6 +1036,14 @@ static func from_dict(data: Variant) -> GameState:
 	s.next_uid = int(data.get("next_uid", 1))
 	s.minutes = int(data.get("minutes", WAKE_MINUTE))
 	s.farm_area_limit = int(data.get("farm_area_limit", 100))
+	for key in ["mail_queue", "promotions", "unlocked", "gated"]:
+		if not (data.get(key, []) is Array):
+			return null
+	s.mail_queue = data.get("mail_queue", []).duplicate(true)
+	s.promotions = data.get("promotions", []).duplicate(true)
+	s.unlocked = data.get("unlocked", []).duplicate()
+	s.gated = data.get("gated", []).duplicate()
+	s.last_read = data.get("last_read", {}).duplicate(true) if data.get("last_read", {}) is Dictionary else {}
 	var sk = data.get("skills", {})
 	if not (sk is Dictionary):
 		return null

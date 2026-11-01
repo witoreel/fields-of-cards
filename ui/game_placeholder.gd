@@ -13,6 +13,7 @@ const AREA_TITLES := {
 
 var _location_label: Label
 var _clock_label: Label
+var _mail_label: Label
 var _travel_box: HBoxContainer
 var _shop_box: HBoxContainer
 var _views: Dictionary = {} # area -> AreaView
@@ -53,6 +54,9 @@ func _ready() -> void:
 		get_tree().change_scene_to_file("res://ui/main_menu.tscn"))
 	header.add_child(back)
 
+	_mail_label = Label.new()
+	_mail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	root.add_child(_mail_label)
 	_shop_box = HBoxContainer.new()
 	root.add_child(_shop_box)
 
@@ -89,6 +93,9 @@ func _rebuild() -> void:
 		b.text = state.location_name(id)
 		b.pressed.connect(func() -> void: GameSession.state.travel_to(id))
 		_travel_box.add_child(b)
+	var lr := state.last_read
+	_mail_label.visible = not lr.is_empty()
+	_mail_label.text = "%s: %s" % [lr.get("title", ""), lr.get("text", "")]
 	for child in _shop_box.get_children():
 		_shop_box.remove_child(child)
 		child.queue_free()

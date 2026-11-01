@@ -3,11 +3,17 @@
 		{"id": "mochila"},
 		{"id": "enxada", "state": {"status": ["enferrujada"]}},
 		{"id": "regador", "state": {"status": ["furado"]}},
-		{"id": "dinheiro", "n": 100},
-		{"id": "carta_boas_vindas", "state": {"attachments": [{"id": "semente", "n": 5}]}}
+		{"id": "dinheiro", "n": 100}
 	],
 	"locations": {
-		"fazenda": [{"id": "caixa_venda"}, {"id": "torneira"}],
+		"fazenda": [
+			{"id": "caixa_venda"}, {"id": "torneira"},
+			{"id": "caixa_correio", "contents": [
+				{"id": "carta", "state": {"title": "Bem-vindo à fazenda",
+				 "text": "Aqui estão algumas sementes para começar.",
+				 "attachments": [{"id": "semente", "n": 5}]}}
+			]}
+		],
 		"floresta": [{"id": "arvore"}],
 		"feira": [{"id": "banca_feira"}]
 	},

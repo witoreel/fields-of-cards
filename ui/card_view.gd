@@ -15,6 +15,8 @@ func setup(card: Dictionary, p_area: StringName, p_index: int, state: GameState)
 	index = p_index
 	var d := state.def_of(card)
 	var title: String = d.display_name if d != null and d.display_name != "" else String(card["id"])
+	if card.get("state", {}).has("title"):
+		title = card["state"]["title"] + (" (lida)" if card["state"].get("read", false) else " (nova)")
 	if int(card.get("n", 1)) > 1:
 		title += " x%d" % int(card["n"])
 	if card.has("open"):

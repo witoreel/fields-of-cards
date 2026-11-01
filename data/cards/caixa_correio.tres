@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1")
-id = &"carta_boas_vindas"
-display_name = "Carta de boas-vindas"
-props = PackedStringArray("mail", "movable")
+id = &"caixa_correio"
+display_name = "Caixa de correio"
+props = PackedStringArray("fixed", "storage", "mailbox")
 weight = 0
 extra = {}
