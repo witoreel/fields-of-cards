@@ -106,10 +106,15 @@ var recipes: RecipeCatalog = RecipeCatalog.default()
 
 
 func _init() -> void:
-	day_ended.connect(func(_day: int) -> void:
-		Farming.on_day_end(self)
-		Economy.on_day_end(self)
-		_check_bankruptcy())
+	day_ended.connect(_on_day_ended)
+
+
+## Sistemas que rodam na virada do dia. É um método (não uma lambda) para
+## o estado não segurar a si mesmo e poder ser liberado.
+func _on_day_ended(_day: int) -> void:
+	Farming.on_day_end(self)
+	Economy.on_day_end(self)
+	_check_bankruptcy()
 
 
 const INITIAL_STATE_PATH := "res://data/initial_state.json"
@@ -825,6 +830,12 @@ func _close_storage_internal() -> void:
 
 
 # --- Persistência ---------------------------------------------------------
+
+## Comando: retrato do estado como dados simples (Z2). A interface e os testes
+## leem por aqui ou pelas consultas; é o mesmo que vai para o save.
+func get_state() -> Dictionary:
+	return to_dict()
+
 
 func to_dict() -> Dictionary:
 	return {
