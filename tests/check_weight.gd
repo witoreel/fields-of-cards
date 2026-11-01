@@ -49,12 +49,12 @@ func _initialize() -> void:
 	_check(s.apply_recipe(pot["uid"], plant["uid"]), "regar")
 	_check(s.volume_of(pot) == 1800, "gastou 200 g")
 	for i in 9:
-		plant["state"].erase("watered")
+		s.remove_status(plant, "regada"); s.remove_status(plant, "encharcada")
 		s.apply_recipe(pot["uid"], plant["uid"])
 	_check(s.volume_of(pot) == 0, "esvaziou depois de 10 regas")
-	plant["state"].erase("watered")
+	s.remove_status(plant, "regada"); s.remove_status(plant, "encharcada")
 	_check(not s.apply_recipe(pot["uid"], plant["uid"]), "sem volume não rega")
-	_check(not plant["state"].has("watered"), "a planta não foi regada")
+	_check(not s.has_status(plant, "regada"), "a planta não foi regada")
 	var r := GameState.from_dict(JSON.parse_string(JSON.stringify(s.to_dict())))
 	var rp: Dictionary = r.hand.filter(func(c: Dictionary) -> bool: return c["id"] == "regador")[0]
 	_check(r.volume_of(rp) == 0, "volume sobrevive ao save")

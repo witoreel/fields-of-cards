@@ -57,7 +57,7 @@ func _initialize() -> void:
 	s.sleep() # sem rega: congelada
 	_check(sown["id"] == "terra_semeada", "sem rega não cresce (R9)")
 	_check(s.apply_recipe(pot["uid"], sown["uid"]), "regar")
-	_check(sown["state"]["watered"] == true, "marcada como regada")
+	_check(s.has_status(sown, "regada"), "marcada como regada (status)")
 	s.sleep()
 	_check(sown["id"] == "terra_broto", "regada, virou broto")
 	_check(not sown.has("state"), "estado de rega zerado")
@@ -97,6 +97,21 @@ func _initialize() -> void:
 	var wood: Dictionary = s.stages["floresta"].filter(func(c: Dictionary) -> bool: return c["id"] == "madeira")[0]
 	_check(s.apply_recipe(hammer["uid"], wood["uid"]), "construir")
 	_check(wood["n"] == 1 and _count(s.stages["floresta"], "construcao") == 1, "gastou 1 madeira e criou construção")
+
+	# Regar a terra já regada a deixa encharcada; ela seca na noite sem crescer
+	var w := GameState.new_game(5, false)
+	var can := w.spawn(&"regador", GameState.HAND)
+	var bed := w.spawn(&"terra_semeada", GameState.LOCATION, 2)
+	_check(w.apply_recipe(can["uid"], bed["uid"]) and w.has_status(bed, "regada") and not w.has_status(bed, "encharcada"), "primeira rega: regada")
+	_check(w.volume_of(can) == 2000 - 100, "gastou 100 g")
+	_check(w.apply_recipe(can["uid"], bed["uid"]), "regar de novo")
+	_check(w.has_status(bed, "encharcada") and not w.has_status(bed, "regada"), "segunda rega: encharcada, deixa de ser só regada")
+	_check(w.volume_of(can) == 2000 - 200, "a água também foi gasta")
+	w.sleep()
+	_check(bed["id"] == "terra_semeada" and not w.has_status(bed, "encharcada"), "encharcada não cresceu e secou")
+	w.apply_recipe(can["uid"], bed["uid"])
+	w.sleep()
+	_check(bed["id"] == "terra_broto", "depois de secar, uma rega só faz crescer")
 
 	# Receita de data externa: conteúdo novo sem código (US-1.4)
 	var extra := RecipeDef.new()

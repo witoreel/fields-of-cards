@@ -15,7 +15,7 @@ extends Resource
 ## Cartas criadas: [{"id": "madeira", "n": 1, "scaled": true}]. Vão para a
 ## área do alvo. Em "scaled", a quantidade vale vezes o multiplicador (V3-V5).
 @export var results: Array = []
-## Estado acrescentado à carta alvo, por exemplo {"watered": true}.
+## Estado acrescentado à carta alvo, por exemplo {"grown": 1}.
 @export var set_state_b: Dictionary = {}
 ## Volume gasto da carta `a` (o regador) por unidade de `b`, em gramas (P5).
 ## 0 = não usa volume. Sem volume suficiente, a receita não roda.
@@ -46,3 +46,8 @@ extends Resource
 
 ## Enche a carta `a` até a capacidade (extra["capacity"]): o regador na fonte (P5).
 @export var a_fill_volume: bool = false
+
+## Troca de status quando a carta alvo já tem o status da chave: {"regada":
+## "encharcada"}. Regar a terra já regada a deixa encharcada. Se houver troca,
+## `b_status_add` não é aplicado.
+@export var b_status_upgrade: Dictionary = {}

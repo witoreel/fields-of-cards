@@ -39,7 +39,7 @@ Todos estão em dados ou em constantes comentadas.
 - Skill: nível = 1 − e^(−pontos/50), bônus máximo 2x; qualidade do jogador na construção de 0,6 a 1,4.
 - Desgaste: durabilidade 100 a 0, com 0 a ação leva 4x; fio e status (enferrujada 1,5x, sujo 1,25x, oleada 0,5x).
 - Animais, pragas (25% por noite), ajudantes (10 a 30 de salário), máquinas e veículos: ver `data/cards/*.tres`.
-- O crescimento é por dia regado: semeada, broto, pronta (1 dia cada). A erva no local congela o plantio.
+- O crescimento é por dia regado: semeada, broto, pronta (1 dia cada). Regar põe o status "regada"; regar de novo troca por "encharcada", que seca na noite sem crescer (o efeito do encharcado é provisório). A erva no local congela o plantio.
 - Progressão: floresta e vila no dia 2, cidade no dia 3, ferramentas no dia 5 (`data/mail.json`, `data/progression.json`).
 
 ## Decisões que tomei (confirme ou mude)

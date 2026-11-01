@@ -41,7 +41,7 @@ static func water(state: GameState, loc: StringName, m2: int) -> int:
 	for c in list.duplicate():
 		if done >= m2:
 			break
-		if not (c["id"] in ["terra_semeada", "terra_broto"]) or c.get("state", {}).get("watered", false):
+		if not (c["id"] in ["terra_semeada", "terra_broto"]) or state.has_status(c, "regada") or state.has_status(c, "encharcada"):
 			continue
 		var take := mini(int(c["n"]), m2 - done)
 		if take < int(c["n"]):
@@ -50,9 +50,7 @@ static func water(state: GameState, loc: StringName, m2: int) -> int:
 			c["n"] = int(c["n"]) - take
 			list.append(part)
 			c = part
-		var st: Dictionary = c.get("state", {}).duplicate()
-		st["watered"] = true
-		c["state"] = st
+		state.add_status(c, "regada")
 		done += take
 	state.restack(list)
 	return done

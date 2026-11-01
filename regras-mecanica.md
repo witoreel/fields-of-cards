@@ -84,7 +84,7 @@ Como ler:
 ## Lavoura e madeira [base]
 - R1. Enxada + terra bruta = terra arada.
 - R2. Semente + terra arada = terra semeada.
-- R3. O regador rega as plantas.
+- R3. O regador rega as plantas. A terra regada ganha o status "regada"; regar de novo a deixa "encharcada". O efeito do encharcado (hoje, não cresce na noite) está em aberto.
 - R4. Terra semeada + tempo = broto, depois pronta para colher.
 - R5. Colher gera um item de colheita vendável.
 - R6. Machado ou serrote + árvore (na floresta) = madeira.

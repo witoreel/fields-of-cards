@@ -57,8 +57,7 @@ func _initialize() -> void:
 	_check(g.apply_recipe(rake["uid"], weed["uid"], 2), "ancinho, 2 unidades")
 	_check(not g.cards_at(&"fazenda").has(weed) and Pests.weeds_at(g, &"fazenda") == 0, "terreno limpo")
 	_check(_count(g.stages["fazenda"], "feno") == 1, "ancinho não dá feno")
-	g.apply_recipe(pot["uid"], plot["uid"])
-	g.sleep()
+	g.sleep() # continua regada da noite anterior: regar de novo a encharcaria
 	_check(plot["id"] == "terra_broto", "sem erva, o plantio volta a crescer")
 
 	# US-29.2: açude e peixes
