@@ -5,7 +5,7 @@ extends CheckBase
 
 func _initialize() -> void:
 	label = "Verificações de locais"
-	var s := GameState.new_game(1)
+	var s := GameState.new_game(1, false)
 
 	# US-4.3: locais iniciais
 	for id in [&"fazenda", &"floresta", &"cidade", &"casa", &"ferragem", &"feira"]:

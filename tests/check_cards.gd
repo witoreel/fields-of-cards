@@ -5,7 +5,7 @@ extends CheckBase
 
 func _initialize() -> void:
 	label = "Verificações de cartas"
-	var s := GameState.new_game(1)
+	var s := GameState.new_game(1, false)
 	var stacked_events := [0]
 	s.stacked.connect(func(_u: int) -> void: stacked_events[0] += 1)
 

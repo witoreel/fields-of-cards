@@ -112,15 +112,49 @@ func _init() -> void:
 		_check_bankruptcy())
 
 
-static func new_game(seed_value: int = 0) -> GameState:
+const INITIAL_STATE_PATH := "res://data/initial_state.json"
+
+
+## Jogo novo. Com `initial` (padrão), aplica o estado inicial de
+## data/initial_state.json (I1-I3). Sem ele, só a mochila na mão.
+static func new_game(seed_value: int = 0, initial: bool = true) -> GameState:
 	var s := GameState.new()
 	s.rng.seed = seed_value if seed_value != 0 else int(Time.get_unix_time_from_system())
 	for id in LOCATION_NAMES:
 		s.cards[String(id)] = []
 		s.stages[String(id)] = []
 	# A carta da mochila fica na mão (AR3, AR7).
-	s.hand.append(s.new_card(&"mochila"))
+	if initial:
+		s._apply_initial_state()
+	else:
+		s.hand.append(s.new_card(&"mochila"))
 	return s
+
+
+## Estado inicial, lido de dados (I1, I2, I3).
+func _apply_initial_state() -> void:
+	var data = JSON.parse_string(FileAccess.get_file_as_string(INITIAL_STATE_PATH))
+	if not (data is Dictionary):
+		push_error("estado inicial ilegível: " + INITIAL_STATE_PATH)
+		hand.append(new_card(&"mochila"))
+		return
+	for entry in data.get("new_locations", []):
+		add_location(StringName(entry["id"]), entry["name"], StringName(entry["parent"]),
+			{"damaged": entry.get("damaged", false)})
+		_fill(cards[entry["id"]], entry.get("cards", []))
+	_fill(hand, data.get("hand", []))
+	for loc in data.get("locations", {}):
+		_fill(cards[loc], data["locations"][loc])
+
+
+func _fill(list: Array, entries: Array) -> void:
+	for e in entries:
+		var c := new_card(StringName(e["id"]), int(e.get("n", 1)))
+		if e.has("state"):
+			c["state"] = e["state"].duplicate(true)
+		if catalog.get_def(StringName(e["id"])).props.has("storage"):
+			storages[str(c["uid"])] = []
+		list.append(c)
 
 
 # --- Locais ---------------------------------------------------------------
@@ -146,10 +180,13 @@ func location_ids() -> Array[StringName]:
 
 
 ## Cria um local dentro de outro: veículo (L8) ou construído com nome (L6).
-func add_location(id: StringName, display_name: String, parent: StringName) -> bool:
+func add_location(id: StringName, display_name: String, parent: StringName, extra: Dictionary = {}) -> bool:
 	if has_location(id) or not has_location(parent):
 		return false
-	extra_locations[String(id)] = {"name": display_name, "parent": String(parent)}
+	var entry := extra.duplicate(true)
+	entry["name"] = display_name
+	entry["parent"] = String(parent)
+	extra_locations[String(id)] = entry
 	cards[String(id)] = []
 	stages[String(id)] = []
 	return true
@@ -743,9 +780,31 @@ func select_card(uid: int) -> bool:
 		open_storage_uid = int(c["uid"])
 		areas_changed.emit()
 		return true
+	if has_prop(card, &"mail"):
+		return read_letter(card)
 	if card["id"] == String(Economy.BILL):
 		return Economy.pay_bill(self, uid) # clicar na conta tenta pagá-la (D4)
 	return use_card(uid)
+
+
+## Lê uma carta de correspondência (M2): não gasta tempo, e o item anexo
+## vai para a mão (M4; o destino é uma pendência). Ler de novo não faz nada.
+func read_letter(card: Dictionary) -> bool:
+	var st: Dictionary = card.get("state", {})
+	if st.get("read", false):
+		return false
+	st["read"] = true
+	card["state"] = st
+	for att in st.get("attachments", []):
+		spawn(StringName(att["id"]), HAND, int(att.get("n", 1)))
+	st.erase("attachments")
+	areas_changed.emit()
+	return true
+
+
+## A roça ou outro local está danificado (I2)?
+func is_damaged(id: StringName) -> bool:
+	return bool(extra_locations.get(String(id), {}).get("damaged", false))
 
 
 func _close_storage_internal() -> void:
@@ -809,7 +868,7 @@ static func from_dict(data: Variant) -> GameState:
 		var e = extras[id]
 		if not (e is Dictionary) or not (e.get("name") is String) or not (e.get("parent") is String):
 			return null
-		s.extra_locations[String(id)] = {"name": e["name"], "parent": e["parent"]}
+		s.extra_locations[String(id)] = e.duplicate(true)
 	var loc := StringName(str(data.get("current_location", "")))
 	if not s.has_location(loc) or not (data.get("cards") is Dictionary):
 		return null

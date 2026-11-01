@@ -5,7 +5,7 @@ extends CheckBase
 
 func _initialize() -> void:
 	label = "Verificações da área da fazenda"
-	var s := GameState.new_game(1)
+	var s := GameState.new_game(1, false)
 	s.farm_area_limit = 10
 
 	# US-6.2: terra bruta não ocupa m² e não se esgota

@@ -5,7 +5,7 @@ extends CheckBase
 
 func _initialize() -> void:
 	label = "Verificações de dívida e falência"
-	var s := GameState.new_game(1)
+	var s := GameState.new_game(1, false)
 	var overs := []
 	s.game_over.connect(func(r: String) -> void: overs.append(r))
 
@@ -50,7 +50,7 @@ func _initialize() -> void:
 	_check(r.minutes == s.minutes, "jogo carregado continua encerrado")
 
 	# Falência declarada diretamente (gatilho futuro)
-	var s2 := GameState.new_game(2)
+	var s2 := GameState.new_game(2, false)
 	s2.declare_bankruptcy("teste")
 	_check(s2.is_game_over, "declare_bankruptcy encerra")
 	_finish()

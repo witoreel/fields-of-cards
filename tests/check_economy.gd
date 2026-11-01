@@ -5,7 +5,7 @@ extends CheckBase
 
 func _initialize() -> void:
 	label = "Verificações da economia"
-	var s := GameState.new_game(1)
+	var s := GameState.new_game(1, false)
 
 	# US-7.6: dinheiro é carta, sem peso
 	var cash := s.spawn(&"dinheiro", GameState.HAND, 100)

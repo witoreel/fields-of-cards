@@ -1,0 +1,17 @@
+{
+	"hand": [
+		{"id": "mochila"},
+		{"id": "enxada", "state": {"status": ["enferrujada"]}},
+		{"id": "regador", "state": {"status": ["furado"]}},
+		{"id": "dinheiro", "n": 100},
+		{"id": "carta_boas_vindas", "state": {"attachments": [{"id": "semente", "n": 5}]}}
+	],
+	"locations": {
+		"fazenda": [{"id": "caixa_venda"}],
+		"floresta": [{"id": "arvore"}]
+	},
+	"new_locations": [
+		{"id": "roca", "name": "Roça", "parent": "fazenda", "damaged": true,
+		 "cards": [{"id": "terra_bruta"}]}
+	]
+}

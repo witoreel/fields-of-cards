@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"carta_boas_vindas"
+display_name = "Carta de boas-vindas"
+props = PackedStringArray("mail", "movable")
+weight = 0
+extra = {}

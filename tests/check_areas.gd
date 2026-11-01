@@ -5,7 +5,7 @@ extends CheckBase
 
 func _initialize() -> void:
 	label = "Verificações de áreas"
-	var s := GameState.new_game(1)
+	var s := GameState.new_game(1, false)
 
 	# US-20.1 / 20.10: cinco áreas; a mão começa com a carta da mochila
 	_check(GameState.AREAS.size() == 5, "cinco áreas")

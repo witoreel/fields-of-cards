@@ -16,7 +16,7 @@ func _initialize() -> void:
 	_check(not SaveGame.exists(path), "sem arquivo, sem save")
 
 	# Estado e ordem das cartas (SV1, Z3)
-	var s := GameState.new_game(42)
+	var s := GameState.new_game(42, false)
 	_check(s.current_location == &"fazenda", "começa na fazenda")
 	s.cards_at(&"fazenda").append({"id": "enxada", "n": 1})
 	s.cards_at(&"fazenda").append({"id": "regador", "n": 1})

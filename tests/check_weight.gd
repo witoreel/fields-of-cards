@@ -5,7 +5,7 @@ extends CheckBase
 
 func _initialize() -> void:
 	label = "Verificações de peso"
-	var s := GameState.new_game(1)
+	var s := GameState.new_game(1, false)
 
 	# US-5.1: peso unitário × quantidade; dinheiro e locais sem peso
 	var seeds := s.spawn(&"semente", GameState.LOCATION, 10)

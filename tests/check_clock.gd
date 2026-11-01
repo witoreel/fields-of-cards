@@ -5,7 +5,7 @@ extends CheckBase
 
 func _initialize() -> void:
 	label = "Verificações do relógio"
-	var s := GameState.new_game(1)
+	var s := GameState.new_game(1, false)
 	var woke := []
 	var ended := []
 	var events := []

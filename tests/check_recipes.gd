@@ -13,7 +13,7 @@ func _count(list: Array, id: String) -> int:
 
 func _initialize() -> void:
 	label = "Verificações de receitas"
-	var s := GameState.new_game(1)
+	var s := GameState.new_game(1, false)
 
 	# US-1.4: receitas e cartas vêm de dados
 	_check(s.recipes.recipes.size() >= 8, "receitas carregadas de data/recipes")
