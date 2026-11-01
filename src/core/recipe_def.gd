@@ -30,3 +30,8 @@ extends Resource
 @export var a_status_remove: PackedStringArray = []
 @export var b_status_add: PackedStringArray = []
 @export var b_status_remove: PackedStringArray = []
+
+## Ação de tempo variável (V1, V2): `minutes` é o tempo de uma unidade, e o
+## jogador escolhe quantas unidades fazer. Consumo, resultado, desgaste e
+## volume gasto crescem na mesma proporção.
+@export var variable: bool = false

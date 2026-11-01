@@ -14,3 +14,4 @@ results = [{"id": "terra_arada", "n": 4}]
 set_state_b = {}
 a_wear = 2
 a_status_add = PackedStringArray("sujo")
+variable = true

@@ -49,7 +49,12 @@ func _can_drop_data(_at: Vector2, data: Variant) -> bool:
 
 func _drop_data(_at: Vector2, data: Variant) -> void:
 	# Arrastar sobre outra carta tenta a receita (C2); sem receita, reordena (C5).
-	if GameSession.state.apply_recipe(int(data["uid"]), uid):
+	var preview := GameSession.state.recipe_preview(int(data["uid"]), uid)
+	if not preview.is_empty():
+		if preview["variable"] and preview["max_units"] > 1:
+			_ask_time(int(data["uid"]), preview) # diálogo com slider (V2)
+		else:
+			GameSession.state.apply_recipe(int(data["uid"]), uid)
 		return
 	var dest := index
 	# Dentro da mesma área, tirar a carta de antes desloca o destino.
@@ -79,3 +84,32 @@ static func _describe(card: Dictionary, d: CardDef) -> String:
 	for b in card.get("buffs", []):
 		out += "\n" + str(b.get("id", "efeito"))
 	return out
+
+
+## Diálogo com slider de tempo (V2). O slider anda de uma unidade em uma.
+func _ask_time(a_uid: int, preview: Dictionary) -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Quanto tempo?"
+	var box := VBoxContainer.new()
+	var label := Label.new()
+	box.add_child(label)
+	var slider := HSlider.new()
+	slider.min_value = 1
+	slider.max_value = preview["max_units"]
+	slider.step = 1
+	slider.value = 1
+	slider.custom_minimum_size = Vector2(320, 24)
+	box.add_child(slider)
+	var per: int = preview["minutes"]
+	var update := func(v: float) -> void:
+		label.text = "%d min (%d unidade(s))" % [int(v) * per, int(v)]
+	slider.value_changed.connect(update)
+	update.call(1.0)
+	dialog.add_child(box)
+	var target_uid := uid
+	dialog.confirmed.connect(func() -> void:
+		GameSession.state.apply_recipe(a_uid, target_uid, int(slider.value))
+		dialog.queue_free())
+	dialog.canceled.connect(dialog.queue_free)
+	get_tree().current_scene.add_child(dialog)
+	dialog.popup_centered()

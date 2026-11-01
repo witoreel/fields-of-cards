@@ -715,7 +715,7 @@ func pay_bill(uid: int) -> bool:
 
 ## Comando: arrasta a carta `a_uid` sobre `b_uid` (C2). Se existe receita para
 ## o par (em qualquer ordem), executa; senão, nada muda. Devolve se executou.
-func apply_recipe(a_uid: int, b_uid: int) -> bool:
+func apply_recipe(a_uid: int, b_uid: int, units: int = 1) -> bool:
 	if is_game_over:
 		return false
 	var la := find_card(a_uid)
@@ -728,15 +728,31 @@ func apply_recipe(a_uid: int, b_uid: int) -> bool:
 		return true
 	var r := recipes.find_for(self, ca, cb)
 	if r != null:
-		return _run(r, ca, cb, lb["area"])
+		return _run(r, ca, cb, lb["area"], units)
 	r = recipes.find_for(self, cb, ca)
 	if r != null:
-		return _run(r, cb, ca, la["area"])
+		return _run(r, cb, ca, la["area"], units)
 	return false
 
 
+## Para a interface (V2): a receita do par é de tempo variável? Devolve
+## {variable, minutes (por unidade), max_units}, ou {} se não há receita.
+func recipe_preview(a_uid: int, b_uid: int) -> Dictionary:
+	var la := find_card(a_uid)
+	var lb := find_card(b_uid)
+	if la.is_empty() or lb.is_empty() or a_uid == b_uid:
+		return {}
+	var ca: Dictionary = area_cards(la["area"])[la["index"]]
+	var cb: Dictionary = area_cards(lb["area"])[lb["index"]]
+	for pair in [[ca, cb], [cb, ca]]:
+		var r := recipes.find_for(self, pair[0], pair[1])
+		if r != null:
+			return {"variable": r.variable, "minutes": r.minutes, "max_units": RecipeRunner.max_units(self, r, pair[0], pair[1])}
+	return {}
+
+
 ## Comando: usa uma carta sozinha (receita de clique, como colher).
-func use_card(uid: int) -> bool:
+func use_card(uid: int, units: int = 1) -> bool:
 	if is_game_over:
 		return false
 	var l := find_card(uid)
@@ -744,11 +760,11 @@ func use_card(uid: int) -> bool:
 		return false
 	var card: Dictionary = area_cards(l["area"])[l["index"]]
 	var r := recipes.find_for(self, {}, card)
-	return r != null and _run(r, {}, card, l["area"])
+	return r != null and _run(r, {}, card, l["area"], units)
 
 
-func _run(r: RecipeDef, a: Dictionary, b: Dictionary, area_b: StringName) -> bool:
-	return RecipeRunner.run(self, r, a, b, area_b)
+func _run(r: RecipeDef, a: Dictionary, b: Dictionary, area_b: StringName, units: int = 1) -> bool:
+	return RecipeRunner.run(self, r, a, b, area_b, units)
 
 
 # --- Abrir e fechar -------------------------------------------------------

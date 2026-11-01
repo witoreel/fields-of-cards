@@ -12,3 +12,4 @@ b_use = 1
 minutes = 10
 results = [{"id": "colheita", "n": 1}, {"id": "terra_arada", "n": 1}]
 set_state_b = {}
+variable = true
