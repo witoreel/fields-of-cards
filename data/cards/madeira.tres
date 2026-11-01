@@ -8,4 +8,4 @@ id = &"madeira"
 display_name = "Madeira"
 props = PackedStringArray("stackable", "movable")
 weight = 2000
-extra = {}
+extra = {"sell_value": 5}

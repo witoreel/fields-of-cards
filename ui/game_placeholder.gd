@@ -14,6 +14,7 @@ const AREA_TITLES := {
 var _location_label: Label
 var _clock_label: Label
 var _travel_box: HBoxContainer
+var _shop_box: HBoxContainer
 var _views: Dictionary = {} # area -> AreaView
 var _dirty := false
 
@@ -52,6 +53,9 @@ func _ready() -> void:
 		get_tree().change_scene_to_file("res://ui/main_menu.tscn"))
 	header.add_child(back)
 
+	_shop_box = HBoxContainer.new()
+	root.add_child(_shop_box)
+
 	# Cima: local/storage e chão. Baixo: mochila. Mão sempre embaixo.
 	for area in [GameState.LOCATION, GameState.STORAGE, GameState.STAGE, GameState.BACKPACK, GameState.HAND]:
 		var v := AreaView.new()
@@ -83,6 +87,21 @@ func _rebuild() -> void:
 		b.text = state.location_name(id)
 		b.pressed.connect(func() -> void: GameSession.state.travel_to(id))
 		_travel_box.add_child(b)
+	for child in _shop_box.get_children():
+		_shop_box.remove_child(child)
+		child.queue_free()
+	var items := Economy.shop_items(state)
+	_shop_box.visible = not items.is_empty()
+	if not items.is_empty():
+		var money := Label.new()
+		money.text = "Dinheiro: %d   Comprar:" % state.money()
+		_shop_box.add_child(money)
+	for item in items:
+		var b := Button.new()
+		var d := state.catalog.get_def(item["id"])
+		b.text = "%s (%d)" % [d.display_name, item["price"]]
+		b.pressed.connect(func() -> void: GameSession.state.buy(item["id"]))
+		_shop_box.add_child(b)
 	for area in _views:
 		var v: AreaView = _views[area]
 		v.visible = state.is_open(area)

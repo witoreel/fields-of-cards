@@ -8,3 +8,4 @@ id = &"enxada"
 display_name = "Enxada"
 props = PackedStringArray("tool", "movable")
 weight = 1200
+extra = {"price": 50, "shop": "ferragem"}

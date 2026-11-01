@@ -97,7 +97,9 @@ var recipes: RecipeCatalog = RecipeCatalog.default()
 
 
 func _init() -> void:
-	day_ended.connect(func(_day: int) -> void: Farming.on_day_end(self))
+	day_ended.connect(func(_day: int) -> void:
+		Farming.on_day_end(self)
+		Economy.on_day_end(self))
 
 
 static func new_game(seed_value: int = 0) -> GameState:
@@ -560,6 +562,32 @@ func area_limit(area: StringName) -> int:
 	return int(def_of(holder).extra.get("weight_limit", 0))
 
 
+# --- Economia -------------------------------------------------------------
+
+func money() -> int:
+	return Economy.money(self)
+
+
+## Comando: compra uma carta da loja do local atual (D2).
+func buy(card_id: StringName) -> bool:
+	return Economy.buy(self, card_id)
+
+
+## Comando: vende a pilha `uid` numa caixa de venda `box_uid` (D1, E1).
+func sell(uid: int, box_uid: int) -> bool:
+	return Economy.sell(self, uid, box_uid)
+
+
+## Comando: cria uma conta (D3).
+func issue_bill(amount: int, due: int) -> Dictionary:
+	return Economy.issue_bill(self, amount, due)
+
+
+## Comando: paga uma conta, na cidade (D4).
+func pay_bill(uid: int) -> bool:
+	return Economy.pay_bill(self, uid)
+
+
 # --- Receitas -------------------------------------------------------------
 
 ## Comando: arrasta a carta `a_uid` sobre `b_uid` (C2). Se existe receita para
@@ -571,6 +599,8 @@ func apply_recipe(a_uid: int, b_uid: int) -> bool:
 		return false
 	var ca: Dictionary = area_cards(la["area"])[la["index"]]
 	var cb: Dictionary = area_cards(lb["area"])[lb["index"]]
+	if has_prop(cb, &"sell_box") and Economy.sell(self, a_uid, b_uid):
+		return true
 	var r := recipes.find(StringName(ca["id"]), StringName(cb["id"]))
 	if r != null:
 		return _run(r, ca, cb, lb["area"])
@@ -665,6 +695,8 @@ func select_card(uid: int) -> bool:
 		open_storage_uid = int(c["uid"])
 		areas_changed.emit()
 		return true
+	if card["id"] == String(Economy.BILL):
+		return Economy.pay_bill(self, uid) # clicar na conta tenta pagá-la (D4)
 	return use_card(uid)
 
 

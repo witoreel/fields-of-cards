@@ -8,4 +8,4 @@ id = &"martelo"
 display_name = "Martelo"
 props = PackedStringArray("tool", "movable")
 weight = 700
-extra = {}
+extra = {"price": 35, "shop": "ferragem"}
