@@ -76,6 +76,8 @@ static func run(state: GameState, r: RecipeDef, a: Dictionary, b: Dictionary, ar
 		state.remove_status(b, st)
 	for st in r.b_status_add:
 		state.add_status(b, st)
+	for key in r.b_meter_add:
+		Animals.add_meter(b, key, int(r.b_meter_add[key]) * units)
 	state.restack(state.area_cards(area_b)) # status mudam a identidade (S1)
 	if r.a_use > 0:
 		_consume(state, a, r.a_use * units)

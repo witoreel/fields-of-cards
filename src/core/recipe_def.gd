@@ -39,3 +39,7 @@ extends Resource
 
 ## Atividade da receita, para a skill (V4): "lavoura", "madeira"... Vazio = sem skill.
 @export var activity: StringName = &""
+
+## Soma (ou subtrai) valores nos medidores da carta alvo, como {"food": 40}
+## (animais, A2). Os medidores de 0 a 100 não passam dos limites.
+@export var b_meter_add: Dictionary = {}

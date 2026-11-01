@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"vassoura"
+display_name = "Vassoura"
+props = PackedStringArray("tool", "movable")
+weight = 400
+extra = {"price": 14, "shop": "ferragem"}

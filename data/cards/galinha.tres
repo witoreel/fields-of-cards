@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"galinha"
+display_name = "Galinha"
+props = PackedStringArray("animal", "movable")
+weight = 2000
+extra = {"sell_value": 40, "animal": {"food_per_day": 30, "clean_per_day": 15, "happy_per_day": 10, "starve_days": 3, "sad_days": 4, "product": {"id": "ovo", "min_wellness": 60}, "meat": {"id": "carne", "n": 2}}}

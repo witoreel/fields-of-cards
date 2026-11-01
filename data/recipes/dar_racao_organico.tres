@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RecipeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/recipe_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"dar_racao_organico"
+a = &"racao_organico"
+b = &"#animal"
+a_use = 1
+minutes = 5
+results = []
+set_state_b = {}
+b_meter_add = {"food": 40, "happy": 10}

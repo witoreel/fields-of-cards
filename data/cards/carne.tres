@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"carne"
+display_name = "Carne"
+props = PackedStringArray("stackable", "movable")
+weight = 500
+extra = {"sell_value": 20}

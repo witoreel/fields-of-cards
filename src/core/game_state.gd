@@ -141,6 +141,7 @@ func _on_woke_up(_day: int) -> void:
 func _on_day_ended(_day: int) -> void:
 	Farming.on_day_end(self)
 	Economy.on_day_end(self)
+	Animals.on_day_end(self)
 	LostFound.on_day_end(self)
 	_check_bankruptcy()
 
@@ -411,6 +412,7 @@ func spawn(id: StringName, area: StringName, n: int = 1) -> Dictionary:
 	var c := new_card(id, n)
 	if catalog.get_def(id).props.has("storage"):
 		storages[str(c["uid"])] = []
+	Animals.init_card(self, c)
 	var merged := _stack_into(area_cards(area), c)
 	if merged.is_empty():
 		area_cards(area).append(c)
@@ -781,6 +783,11 @@ func declare_bankruptcy(reason: String) -> void:
 	game_over_reason = reason
 	game_over.emit(reason)
 	areas_changed.emit()
+
+
+## Comando: manda um animal para o corte (A6).
+func slaughter(uid: int) -> bool:
+	return not is_game_over and Animals.slaughter(self, uid)
 
 
 ## Comando: pega uma carta do achados e perdidos (H5), na cidade.
