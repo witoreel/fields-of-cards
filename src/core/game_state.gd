@@ -442,6 +442,43 @@ func has_prop(card: Dictionary, prop: StringName) -> bool:
 	return (card.get("props", []) as Array).has(String(prop))
 
 
+## Status da carta (S1): sujo, molhado, enferrujada... ficam em
+## state["status"]. São diferentes dos buffs e debuffs (S2, C9), que ficam em
+## card["buffs"] e mexem no desempenho.
+func statuses_of(card: Dictionary) -> Array:
+	return card.get("state", {}).get("status", [])
+
+
+func has_status(card: Dictionary, status: String) -> bool:
+	return statuses_of(card).has(status)
+
+
+## Acrescenta um status (sem repetir). Devolve se mudou.
+func add_status(card: Dictionary, status: String) -> bool:
+	if has_status(card, status):
+		return false
+	var st: Dictionary = card.get("state", {}).duplicate(true)
+	var list: Array = st.get("status", [])
+	list.append(status)
+	st["status"] = list
+	card["state"] = st
+	return true
+
+
+func remove_status(card: Dictionary, status: String) -> bool:
+	if not has_status(card, status):
+		return false
+	var st: Dictionary = card["state"].duplicate(true)
+	st["status"].erase(status)
+	if st["status"].is_empty():
+		st.erase("status")
+	if st.is_empty():
+		card.erase("state")
+	else:
+		card["state"] = st
+	return true
+
+
 ## Buffs e debuffs ficam na própria carta (C9). O formato é livre.
 func add_buff(uid: int, buff: Dictionary) -> bool:
 	var loc := find_card(uid)

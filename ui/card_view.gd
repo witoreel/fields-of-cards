@@ -19,6 +19,8 @@ func setup(card: Dictionary, p_area: StringName, p_index: int, state: GameState)
 		title += " x%d" % int(card["n"])
 	if card.has("open"):
 		title += " (aberto)"
+	for st in state.statuses_of(card):
+		title += "\n[%s]" % st # status visível na carta (S1)
 	var w := state.card_weight(card)
 	if w > 0:
 		title += "\n%d g" % w
