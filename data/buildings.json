@@ -1,0 +1,67 @@
+{
+	"galinheiro": {
+		"name": "Galinheiro",
+		"m2": 6,
+		"base_multiplier": 1.0,
+		"wood": 6,
+		"pro_cost": 300,
+		"build_minutes": 240,
+		"capacity": [
+			6,
+			12,
+			20
+		]
+	},
+	"celeiro": {
+		"name": "Celeiro",
+		"m2": 12,
+		"base_multiplier": 1.0,
+		"wood": 12,
+		"pro_cost": 600,
+		"build_minutes": 480,
+		"capacity": [
+			4,
+			8,
+			12
+		]
+	},
+	"shed": {
+		"name": "Shed",
+		"m2": 6,
+		"base_multiplier": 1.0,
+		"wood": 6,
+		"pro_cost": 250,
+		"build_minutes": 240,
+		"capacity": [
+			100000,
+			200000,
+			400000
+		]
+	},
+	"poco": {
+		"name": "Poço",
+		"m2": 2,
+		"base_multiplier": 1.0,
+		"wood": 3,
+		"pro_cost": 400,
+		"build_minutes": 300,
+		"capacity": [
+			1,
+			2,
+			3
+		]
+	},
+	"roca": {
+		"name": "Roça",
+		"m2": 10,
+		"base_multiplier": 1.0,
+		"wood": 8,
+		"pro_cost": 350,
+		"build_minutes": 300,
+		"capacity": [
+			1,
+			2,
+			3
+		]
+	}
+}

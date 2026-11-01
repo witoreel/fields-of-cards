@@ -142,6 +142,7 @@ func _on_day_ended(_day: int) -> void:
 	Farming.on_day_end(self)
 	Economy.on_day_end(self)
 	Animals.on_day_end(self)
+	Buildings.on_day_end(self)
 	LostFound.on_day_end(self)
 	_check_bankruptcy()
 
@@ -175,7 +176,8 @@ func _apply_initial_state() -> void:
 		return
 	for entry in data.get("new_locations", []):
 		add_location(StringName(entry["id"]), entry["name"], StringName(entry["parent"]),
-			{"damaged": entry.get("damaged", false), "multiplier": entry.get("multiplier", 1.0)})
+			{"damaged": entry.get("damaged", false), "multiplier": entry.get("multiplier", 1.0),
+			 "durability": entry.get("durability", 100), "kind": "roca", "level": 1, "quality": 1.0})
 		_fill(cards[entry["id"]], entry.get("cards", []))
 	_fill(hand, data.get("hand", []))
 	for loc in data.get("locations", {}):
@@ -783,6 +785,21 @@ func declare_bankruptcy(reason: String) -> void:
 	game_over_reason = reason
 	game_over.emit(reason)
 	areas_changed.emit()
+
+
+## Comando: constrói um tipo de construção (B1 a B3). Devolve o id do local.
+func build(kind: StringName, display_name: String, professional: bool = false) -> StringName:
+	return Buildings.build(self, kind, display_name, professional)
+
+
+## Comando: conserta uma construção (B5).
+func repair_location(id: StringName) -> bool:
+	return Buildings.repair(self, id)
+
+
+## Comando: sobe o nível de uma construção (B7).
+func upgrade_location(id: StringName) -> bool:
+	return Buildings.upgrade(self, id)
 
 
 ## Comando: manda um animal para o corte (A6).
