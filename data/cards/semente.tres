@@ -8,3 +8,4 @@ id = &"semente"
 display_name = "Semente"
 props = PackedStringArray("stackable", "movable")
 weight = 5
+extra = {"grow_minutes": 20}

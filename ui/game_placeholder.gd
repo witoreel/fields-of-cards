@@ -12,6 +12,7 @@ const AREA_TITLES := {
 }
 
 var _location_label: Label
+var _clock_label: Label
 var _travel_box: HBoxContainer
 var _views: Dictionary = {} # area -> AreaView
 var _dirty := false
@@ -36,6 +37,12 @@ func _ready() -> void:
 	_location_label = Label.new()
 	_location_label.add_theme_font_size_override("font_size", 28)
 	header.add_child(_location_label)
+	_clock_label = Label.new()
+	header.add_child(_clock_label)
+	var sleep_btn := Button.new()
+	sleep_btn.text = "Dormir"
+	sleep_btn.pressed.connect(func() -> void: GameSession.state.sleep())
+	header.add_child(sleep_btn)
 	_travel_box = HBoxContainer.new()
 	_travel_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(_travel_box)
@@ -67,6 +74,7 @@ func _rebuild() -> void:
 	_dirty = false
 	var state := GameSession.state
 	_location_label.text = state.location_name(state.current_location)
+	_clock_label.text = state.clock_text() + ("  (cansado)" if state.is_tired() else "")
 	for child in _travel_box.get_children():
 		_travel_box.remove_child(child)
 		child.queue_free()

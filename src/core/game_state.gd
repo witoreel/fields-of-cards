@@ -8,7 +8,7 @@ extends RefCounted
 ## Áreas (AR1): HAND (mão), BACKPACK (mochila), STORAGE (storage aberto),
 ## LOCATION (cartas do local atual) e STAGE (o chão do local atual).
 
-const FORMAT_VERSION := 2
+const FORMAT_VERSION := 3
 const START_LOCATION := &"fazenda"
 
 const HAND := &"hand"
@@ -37,11 +37,38 @@ const LOCATION_PARENTS := {
 
 ## Emitido ao chegar a um local (SV2 liga o autosave a ele).
 signal arrived(location_id: StringName)
+## Relógio (T2, T3, T7). `from_min` e `to_min` são minutos absolutos.
+signal time_advanced(from_min: int, to_min: int)
+## À meia-noite o dia termina (T7). `day` é o número do dia que acabou.
+signal day_ended(day: int)
+## O jogador acordou às 06:00 (T8) no dia `day`.
+signal woke_up(day: int)
+## Um evento agendado venceu (T3). Sistemas (crescimento, contas) ouvem isto.
+signal event_due(kind: String, data: Dictionary)
 ## Emitido quando cartas mudam de lugar ou de ordem, ou áreas abrem/fecham.
 signal areas_changed
 ## Emitido quando uma carta se soma a outra igual (C4). A interface usa para
 ## um destaque estático (W6).
 signal stacked(target_uid: int)
+
+const MINUTES_PER_DAY := 1440
+const WAKE_MINUTE := 360 # 06:00 (T8)
+const TIRED_MINUTE := 1320 # 22:00 (T9)
+
+## Minutos desde o início do dia 1, 00:00. O jogo começa às 06:00 do dia 1.
+var minutes := WAKE_MINUTE
+## Buffs e debuffs do jogador, como na carta (C9). Formato livre.
+var player_buffs: Array = []
+## Eventos agendados (T3): {at, kind, data}, guardados no save.
+var scheduled: Array = []
+
+## Custo de viagem em minutos entre locais de primeiro nível. Valores
+## provisórios, para balancear depois (T1). Dentro do mesmo pai custa 0.
+const TRAVEL_MINUTES := {
+	&"fazenda|floresta": 30,
+	&"fazenda|cidade": 60,
+	&"floresta|cidade": 90,
+}
 
 var current_location: StringName = START_LOCATION
 ## location_id (String) -> Array[Dictionary] de cartas, na ordem.
@@ -140,12 +167,118 @@ func destinations() -> Array[StringName]:
 	return out
 
 
+## Primeiro nível de um local (a cidade, para a ferragem).
+func root_of(id: StringName) -> StringName:
+	while parent_of(id) != &"":
+		id = parent_of(id)
+	return id
+
+
+## Minutos para ir de um local a outro (T1). Entre locais da mesma raiz é
+## zero; entre raízes, vem da tabela TRAVEL_MINUTES (simétrica).
+func travel_minutes(from: StringName, to: StringName) -> int:
+	var a := root_of(from)
+	var b := root_of(to)
+	if a == b:
+		return 0
+	var key := StringName("%s|%s" % [a, b])
+	var rkey := StringName("%s|%s" % [b, a])
+	return int(TRAVEL_MINUTES.get(key, TRAVEL_MINUTES.get(rkey, 0)))
+
+
+# --- Relógio --------------------------------------------------------------
+
+func day_number() -> int:
+	return minutes / MINUTES_PER_DAY + 1
+
+
+func minute_of_day() -> int:
+	return minutes % MINUTES_PER_DAY
+
+
+## "Dia 1, 06:00".
+func clock_text() -> String:
+	var m := minute_of_day()
+	return "Dia %d, %02d:%02d" % [day_number(), m / 60, m % 60]
+
+
+## Comando: avança o relógio (T1, T3). Se a meia-noite for atingida, o dia
+## termina de forma inevitável (T7): o jogador dorme e acorda às 06:00, e o
+## que sobrar da ação se perde.
+func advance_time(amount: int) -> void:
+	if amount <= 0:
+		return
+	var to_midnight := (minutes / MINUTES_PER_DAY + 1) * MINUTES_PER_DAY - minutes
+	if amount < to_midnight:
+		_step(amount)
+		return
+	_step(to_midnight)
+	_end_day_and_wake(true)
+
+
+## Comando: dorme até as 06:00 (T4, T8). Quem dormiu depois das 22:00 acorda
+## cansado (T9). Dormir é possível a qualquer hora (aberto: antes das 22:00).
+func sleep() -> void:
+	var m := minute_of_day()
+	var tired := m >= TIRED_MINUTE
+	if m < WAKE_MINUTE:
+		_step(WAKE_MINUTE - m)
+		_wake(tired)
+		return
+	_step(MINUTES_PER_DAY - m)
+	_end_day_and_wake(tired)
+
+
+func _end_day_and_wake(tired: bool) -> void:
+	day_ended.emit(day_number() - 1)
+	_step(WAKE_MINUTE)
+	_wake(tired)
+
+
+func _wake(tired: bool) -> void:
+	player_buffs = player_buffs.filter(func(b: Dictionary) -> bool: return b.get("id") != "cansado")
+	if tired:
+		# O efeito do "cansado" está em aberto; por ora é só o marcador.
+		player_buffs.append({"id": "cansado", "kind": "debuff"})
+	woke_up.emit(day_number())
+
+
+func is_tired() -> bool:
+	return player_buffs.any(func(b: Dictionary) -> bool: return b.get("id") == "cansado")
+
+
+func _step(amount: int) -> void:
+	var from := minutes
+	minutes += amount
+	_fire_due_events()
+	time_advanced.emit(from, minutes)
+	areas_changed.emit()
+
+
+## Agenda um evento para um minuto absoluto (T3).
+func schedule(at: int, kind: String, data: Dictionary = {}) -> void:
+	scheduled.append({"at": at, "kind": kind, "data": data.duplicate(true)})
+
+
+func _fire_due_events() -> void:
+	var due: Array = scheduled.filter(func(e: Dictionary) -> bool: return e["at"] <= minutes)
+	if due.is_empty():
+		return
+	scheduled = scheduled.filter(func(e: Dictionary) -> bool: return e["at"] > minutes)
+	due.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a["at"] < b["at"])
+	for e in due:
+		event_due.emit(e["kind"], e["data"])
+
+
 ## Comando: anda para um local. Devolve falso se o local não existe.
 ## O tempo gasto (T1) ainda é zero, porque não há relógio.
 func travel_to(id: StringName) -> bool:
 	if not has_location(id):
 		return false
 	_close_storage_internal()
+	# A viagem gasta minutos (T1). Se a meia-noite cair no caminho, o dia
+	# acaba e o jogador acorda às 06:00 já no destino.
+	advance_time(travel_minutes(current_location, id))
 	current_location = id
 	arrived.emit(id)
 	areas_changed.emit()
@@ -369,6 +502,9 @@ func to_dict() -> Dictionary:
 		"backpack_open": backpack_open,
 		"open_storage_uid": open_storage_uid,
 		"next_uid": next_uid,
+		"minutes": minutes,
+		"player_buffs": player_buffs.duplicate(true),
+		"scheduled": scheduled.duplicate(true),
 		# Inteiros de 64 bits viram texto: JSON só garante 53 bits.
 		"rng_seed": str(rng.seed),
 		"rng_state": str(rng.state),
@@ -376,12 +512,12 @@ func to_dict() -> Dictionary:
 
 
 ## Reconstrói a partir de dados. Devolve null se algo estiver errado (SV4).
-## Aceita a versão 1 (sem mão, chão e storages).
+## Aceita versões antigas, preenchendo o que faltava.
 static func from_dict(data: Variant) -> GameState:
 	if not (data is Dictionary):
 		return null
 	var version := int(data.get("version", -1))
-	if version != FORMAT_VERSION and version != 1:
+	if version < 1 or version > FORMAT_VERSION:
 		return null
 	var s := GameState.new()
 	var extras = data.get("extra_locations", {})
@@ -417,6 +553,16 @@ static func from_dict(data: Variant) -> GameState:
 	s.backpack_open = bool(data.get("backpack_open", false))
 	s.open_storage_uid = int(data.get("open_storage_uid", 0))
 	s.next_uid = int(data.get("next_uid", 1))
+	s.minutes = int(data.get("minutes", WAKE_MINUTE))
+	var pb = data.get("player_buffs", [])
+	var sc = data.get("scheduled", [])
+	if not (pb is Array) or not (sc is Array):
+		return null
+	s.player_buffs = pb.duplicate(true)
+	for e in sc:
+		if not (e is Dictionary) or not e.has("at") or not (e.get("kind") is String):
+			return null
+		s.scheduled.append({"at": int(e["at"]), "kind": e["kind"], "data": e.get("data", {})})
 	if s.open_storage_uid != 0 and not s.storages.has(str(s.open_storage_uid)):
 		return null
 	var seed_text := str(data.get("rng_seed", ""))
