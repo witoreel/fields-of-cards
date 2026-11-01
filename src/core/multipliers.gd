@@ -51,3 +51,14 @@ static func total(state: GameState, tool_card: Dictionary, activity: StringName)
 ## Quantidade final de um resultado "scaled".
 static func scaled(base: int, mult: float) -> int:
 	return maxi(1, roundi(base * mult)) if base > 0 else 0
+
+
+## Resumo das skills para a tela (US-25.3): [{activity, points, percent}],
+## com `percent` o nível de 0 a 100. Só atividades com pontos.
+static func skill_summary(state: GameState) -> Array:
+	var out := []
+	var names := state.skills.keys()
+	names.sort()
+	for a in names:
+		out.append({"activity": a, "points": int(state.skills[a]), "percent": roundi(skill_level(state, StringName(a)) * 100.0)})
+	return out

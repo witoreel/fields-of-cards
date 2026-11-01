@@ -14,6 +14,7 @@ const AREA_TITLES := {
 var _location_label: Label
 var _clock_label: Label
 var _mail_label: Label
+var _skill_label: Label
 var _travel_box: HBoxContainer
 var _shop_box: HBoxContainer
 var _views: Dictionary = {} # area -> AreaView
@@ -54,6 +55,8 @@ func _ready() -> void:
 		get_tree().change_scene_to_file("res://ui/main_menu.tscn"))
 	header.add_child(back)
 
+	_skill_label = Label.new()
+	root.add_child(_skill_label)
 	_mail_label = Label.new()
 	_mail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(_mail_label)
@@ -93,6 +96,11 @@ func _rebuild() -> void:
 		b.text = state.location_name(id)
 		b.pressed.connect(func() -> void: GameSession.state.travel_to(id))
 		_travel_box.add_child(b)
+	var parts: Array[String] = []
+	for sk in Multipliers.skill_summary(state):
+		parts.append("%s %d%%" % [sk["activity"], sk["percent"]])
+	_skill_label.visible = not parts.is_empty()
+	_skill_label.text = "Skills: " + ", ".join(parts)
 	var lr := state.last_read
 	_mail_label.visible = not lr.is_empty()
 	_mail_label.text = "%s: %s" % [lr.get("title", ""), lr.get("text", "")]
