@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"ajudante_experiente"
+display_name = "Ajudante experiente"
+props = PackedStringArray("helper", "fixed")
+weight = 0
+extra = {"price": 600, "shop": "vila", "helper": {"wage": 30, "m2_per_day": 16}}

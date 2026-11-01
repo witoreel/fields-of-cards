@@ -73,6 +73,11 @@ var unlocked: Array = []
 var gated: Array = []
 ## Cartas guardadas no achados e perdidos (H4, H5), com since_day.
 var lost_and_found: Array = []
+## Pragas sorteadas na virada do dia (Y2). Ligadas só em jogo com estado
+## inicial; testes de outras regras usam jogo em branco, sem sorteios.
+var pests_enabled := false
+## Ocorrências da última virada de dia, para a interface avisar ("fox:1").
+var last_events: Array = []
 ## Pontos de skill por atividade (K1): {"lavoura": 12}.
 var skills: Dictionary = {}
 ## Buffs e debuffs do jogador, como na carta (C9). Formato livre.
@@ -151,10 +156,13 @@ func _on_woke_up(_day: int) -> void:
 ## Sistemas que rodam na virada do dia. É um método (não uma lambda) para
 ## o estado não segurar a si mesmo e poder ser liberado.
 func _on_day_ended(_day: int) -> void:
+	last_events.clear()
+	Pests.run_helpers(self) # a rega do ajudante conta para o crescimento da noite
 	Farming.on_day_end(self)
 	Economy.on_day_end(self)
 	Animals.on_day_end(self)
 	Buildings.on_day_end(self)
+	Pests.on_day_end(self)
 	LostFound.on_day_end(self)
 	_check_bankruptcy()
 
@@ -173,6 +181,7 @@ static func new_game(seed_value: int = 0, initial: bool = true) -> GameState:
 		s.stages[String(id)] = []
 	# A carta da mochila fica na mão (AR3, AR7).
 	if initial:
+		s.pests_enabled = true
 		s._apply_initial_state()
 	else:
 		s.hand.append(s.new_card(&"mochila"))
@@ -483,6 +492,13 @@ func _stack_into(list: Array, card: Dictionary) -> Dictionary:
 			stacked.emit(last_stacked_uid)
 			return other
 	return {}
+
+
+## Põe `n` cartas de `id` em uma lista qualquer, somando se possível.
+func spawn_into(list: Array, id: StringName, n: int) -> void:
+	var c := new_card(id, n)
+	if _stack_into(list, c).is_empty():
+		list.append(c)
 
 
 func def_of(card: Dictionary) -> CardDef:
@@ -1053,6 +1069,8 @@ func to_dict() -> Dictionary:
 		"farm_area_limit": farm_area_limit,
 		"skills": skills.duplicate(true),
 		"mail_queue": mail_queue.duplicate(true),
+		"last_events": last_events.duplicate(),
+		"pests_enabled": pests_enabled,
 		"lost_and_found": lost_and_found.duplicate(true),
 		"promotions": promotions.duplicate(true),
 		"last_read": last_read.duplicate(true),
@@ -1113,6 +1131,7 @@ static func from_dict(data: Variant) -> GameState:
 	s.next_uid = int(data.get("next_uid", 1))
 	s.minutes = int(data.get("minutes", WAKE_MINUTE))
 	s.farm_area_limit = int(data.get("farm_area_limit", 100))
+	s.pests_enabled = bool(data.get("pests_enabled", false))
 	var laf = _read_list(data.get("lost_and_found", []))
 	if laf == null:
 		return null
