@@ -37,7 +37,7 @@ func _initialize() -> void:
 
 	# Reordenar na mesma área (C5)
 	var a := s.spawn(&"semente", GameState.STAGE)
-	var b := s.spawn(&"semente", GameState.STAGE)
+	var b := s.spawn(&"enxada", GameState.STAGE)
 	var c := s.spawn(&"regador", GameState.STAGE)
 	_check(s.move_card(c["uid"], GameState.STAGE, 0), "reordena para o início")
 	_check(s.stages["fazenda"][0]["uid"] == c["uid"] and s.stages["fazenda"][2]["uid"] == b["uid"], "nova ordem")

@@ -29,6 +29,9 @@ const LOCATION_NAMES := {
 signal arrived(location_id: StringName)
 ## Emitido quando cartas mudam de lugar ou de ordem, ou áreas abrem/fecham.
 signal areas_changed
+## Emitido quando uma carta se soma a outra igual (C4). A interface usa para
+## um destaque estático (W6).
+signal stacked(target_uid: int)
 
 var current_location: StringName = START_LOCATION
 ## location_id (String) -> Array[Dictionary] de cartas, na ordem.
@@ -45,6 +48,8 @@ var backpack_open := false
 ## uid do storage aberto, ou 0.
 var open_storage_uid := 0
 var next_uid := 1
+## uid da última carta que recebeu uma soma, para o destaque (C4, W6).
+var last_stacked_uid := 0
 var rng := RandomNumberGenerator.new()
 var catalog: CardCatalog = CardCatalog.default()
 
@@ -131,11 +136,36 @@ func spawn(id: StringName, area: StringName, n: int = 1) -> Dictionary:
 	if not catalog.has_def(id) or not is_open(area):
 		return {}
 	var c := new_card(id, n)
-	area_cards(area).append(c)
 	if catalog.get_def(id).props.has("storage"):
 		storages[str(c["uid"])] = []
+	var merged := _stack_into(area_cards(area), c)
+	if merged.is_empty():
+		area_cards(area).append(c)
+	else:
+		c = merged
 	areas_changed.emit()
 	return c
+
+
+## Duas cartas se somam (C4) se são acumuláveis e iguais: mesmo id e mesmos
+## dados extras (propriedades e buffs). Um estágio diferente é outra carta.
+## Fica numa função só porque o critério ainda está em aberto.
+func cards_match(a: Dictionary, b: Dictionary) -> bool:
+	if a["id"] != b["id"] or not has_prop(a, &"stackable"):
+		return false
+	return a.get("props", []) == b.get("props", []) and a.get("buffs", []) == b.get("buffs", [])
+
+
+## Soma `card` à primeira carta igual de `list`. Devolve a carta que recebeu
+## a soma, ou {} se não havia igual (nada muda nesse caso).
+func _stack_into(list: Array, card: Dictionary) -> Dictionary:
+	for other in list:
+		if int(other["uid"]) != int(card["uid"]) and cards_match(other, card):
+			other["n"] = int(other["n"]) + int(card["n"])
+			last_stacked_uid = int(other["uid"])
+			stacked.emit(last_stacked_uid)
+			return other
+	return {}
 
 
 func def_of(card: Dictionary) -> CardDef:
@@ -219,6 +249,7 @@ func move_card(uid: int, to_area: StringName, index: int = -1) -> bool:
 	var from := find_card(uid)
 	if from.is_empty() or not is_open(to_area):
 		return false
+	last_stacked_uid = 0
 	var src := area_cards(from["area"])
 	var card: Dictionary = src[from["index"]]
 	if from["area"] != to_area:
@@ -228,6 +259,9 @@ func move_card(uid: int, to_area: StringName, index: int = -1) -> bool:
 			return false
 	var dst := area_cards(to_area)
 	src.remove_at(from["index"])
+	if from["area"] != to_area and not _stack_into(dst, card).is_empty():
+		areas_changed.emit()
+		return true
 	if index < 0 or index > dst.size():
 		index = dst.size()
 	dst.insert(index, card)

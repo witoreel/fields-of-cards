@@ -22,7 +22,10 @@ func setup(card: Dictionary, p_area: StringName, p_index: int, state: GameState)
 	text = title
 	custom_minimum_size = Vector2(104, 72)
 	focus_mode = Control.FOCUS_ALL
-	tooltip_text = "uid %d" % uid
+	tooltip_text = _describe(card, d)
+	# Destaque estático da soma (C4, W6): só cor, sem movimento.
+	if uid == state.last_stacked_uid:
+		modulate = Color(1.0, 0.95, 0.55)
 	pressed.connect(func() -> void: GameSession.state.select_card(uid))
 
 
@@ -44,3 +47,25 @@ func _drop_data(_at: Vector2, data: Variant) -> void:
 	if not from.is_empty() and from["area"] == area and from["index"] < index:
 		dest -= 1
 	GameSession.state.move_card(int(data["uid"]), area, dest)
+
+
+const PROP_NAMES := {
+	"location": "local", "tool": "ferramenta", "stackable": "acumulável",
+	"movable": "móvel", "fixed": "inerente ao local", "vehicle": "veículo",
+	"storage": "storage", "backpack": "mochila",
+}
+
+
+## Propriedades da carta em texto (US-3.1).
+static func _describe(card: Dictionary, d: CardDef) -> String:
+	var names: Array[String] = []
+	var all: Array = []
+	if d != null:
+		all.append_array(Array(d.props))
+	all.append_array(card.get("props", []))
+	for p in all:
+		names.append(PROP_NAMES.get(p, p))
+	var out := ", ".join(names) if not names.is_empty() else "sem propriedades"
+	for b in card.get("buffs", []):
+		out += "\n" + str(b.get("id", "efeito"))
+	return out
