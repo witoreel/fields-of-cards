@@ -12,16 +12,16 @@ func _initialize() -> void:
 	# US-17.1 / M1: a caixa é um storage de cartas de correspondência
 	_check(s.has_prop(box, &"storage") and s.has_prop(box, &"mailbox"), "caixa de correio é um storage")
 	_check(Mail.mailbox_uid(s) == box["uid"] and Mail.unread(s) == 1, "uma carta nova (boas-vindas)")
-	_check(s.mail_queue.size() == 6, "6 cartas agendadas em dados")
+	_check(s.mail_queue.size() == 7, "7 cartas agendadas em dados")
 
 	# T6: as cartas chegam quando o jogador acorda, não antes
 	s.sleep() # vira para o dia 2
-	_check(s.day_number() == 2 and Mail.unread(s) == 3, "no dia 2 chegaram a dica de regar e a da floresta (%d novas)" % Mail.unread(s))
+	_check(s.day_number() == 2 and Mail.unread(s) == 4, "no dia 2 chegaram 3 cartas (dica de regar, floresta e vila) (%d novas)" % Mail.unread(s))
 	s.advance_time(60)
-	_check(Mail.unread(s) == 3, "nada chega no meio do dia")
+	_check(Mail.unread(s) == 4, "nada chega no meio do dia")
 	s.sleep()
 	s.sleep()
-	_check(s.day_number() == 4 and s.mail_queue.size() == 1 and Mail.unread(s) == 6, "dias 3 e 4 entregues (o dia 5 espera) (%d novas)" % Mail.unread(s))
+	_check(s.day_number() == 4 and s.mail_queue.size() == 1 and Mail.unread(s) == 7, "dias 3 e 4 entregues (o dia 5 espera) (%d novas)" % Mail.unread(s))
 
 	# US-17.2 / M2: ler ao clicar, sem gastar tempo
 	s.select_card(box["uid"])
@@ -31,7 +31,7 @@ func _initialize() -> void:
 	_check(s.select_card(tip["uid"]) and s.minutes == t, "ler custa 0 minutos")
 	_check(tip["state"]["read"] and s.last_read["title"] == "Dica: regar", "lida e mostrada")
 	_check("rega" in s.last_read["text"] or "regadas" in s.last_read["text"], "texto da dica (M3)")
-	_check(not s.select_card(tip["uid"]) and Mail.unread(s) == 5, "reler não conta como nova")
+	_check(not s.select_card(tip["uid"]) and Mail.unread(s) == 6, "reler não conta como nova")
 
 	# US-17.4 / M4: item anexo
 	var welcome: Dictionary = letters.filter(func(c: Dictionary) -> bool: return c["state"]["title"] == "Bem-vindo à fazenda")[0]

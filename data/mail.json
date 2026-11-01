@@ -46,5 +46,13 @@
 			"serrote",
 			"martelo"
 		]
+	},
+	{
+		"day": 2,
+		"title": "A vila",
+		"text": "A vila fica pertinho. Lá tem uma venda simples e o achados e perdidos.",
+		"unlock": [
+			"vila"
+		]
 	}
 ]

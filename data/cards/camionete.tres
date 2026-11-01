@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/card_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"camionete"
+display_name = "Camionete"
+props = PackedStringArray("vehicle", "storage", "movable")
+weight = 0
+extra = {"price": 9000, "shop": "cidade_grande", "weight_limit": 300000, "vehicle": {"travel_mult": 0.3, "fuel": true, "fuel_per_trip": 6}}

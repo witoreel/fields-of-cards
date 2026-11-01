@@ -46,7 +46,7 @@ static func wellness(card: Dictionary) -> int:
 
 static func add_meter(card: Dictionary, key: String, amount: int) -> void:
 	var st: Dictionary = card.get("state", {}).duplicate(true)
-	var cap := MAX if key in ["food", "clean", "happy"] else 1000000
+	var cap := MAX if key in ["food", "clean", "happy"] else (Vehicles.MAX_FUEL if key == "fuel" else 1000000)
 	st[key] = clampi(int(st.get(key, 0)) + amount, 0, cap)
 	card["state"] = st
 

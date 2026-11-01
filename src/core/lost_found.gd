@@ -2,10 +2,10 @@ class_name LostFound
 extends RefCounted
 ## Achados e perdidos (H4, H5). Na virada do dia, tudo que sobrou no chão dos
 ## locais vai para o achados e perdidos, que guarda por 7 dias e avisa por
-## carta. A vila ainda não existe: até lá ele fica na cidade (ver pendências).
+## carta. Ele fica na vila (Q1, H5).
 
 const DAYS := 7
-const PLACE := &"cidade"
+const PLACE := &"vila"
 
 
 ## Roda na virada do dia, depois que `day_number()` já é o do dia novo.
@@ -29,7 +29,7 @@ static func on_day_end(state: GameState) -> void:
 	if moved > 0:
 		Mail.send(state, {
 			"title": "Achados e perdidos",
-			"text": "Você deixou %d carta(s) no chão. Elas foram para o achados e perdidos da cidade e ficam lá por %d dias." % [moved, DAYS],
+			"text": "Você deixou %d carta(s) no chão. Elas foram para o achados e perdidos da vila e ficam lá por %d dias." % [moved, DAYS],
 		}, state.day_number())
 
 
@@ -38,7 +38,7 @@ static func days_left(state: GameState, card: Dictionary) -> int:
 	return DAYS - (state.day_number() - int(card["since_day"]))
 
 
-## Comando: pega uma carta de volta, na mão. Só dá na cidade.
+## Comando: pega uma carta de volta, na mão. Só dá na vila.
 static func claim(state: GameState, uid: int) -> bool:
 	if state.root_of(state.current_location) != PLACE:
 		return false

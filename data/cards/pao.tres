@@ -8,4 +8,4 @@ id = &"pao"
 display_name = "Pão"
 props = PackedStringArray("stackable", "movable")
 weight = 300
-extra = {"food": {"buff": "energizado", "days": 1}}
+extra = {"price": 8, "shop": "vila", "food": {"buff": "energizado", "days": 1}}

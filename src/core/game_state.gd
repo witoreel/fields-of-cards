@@ -23,6 +23,8 @@ const LOCATION_NAMES := {
 	&"fazenda": "Fazenda",
 	&"floresta": "Floresta",
 	&"cidade": "Cidade",
+	&"vila": "Vila",
+	&"cidade_grande": "Cidade grande",
 	&"casa": "Casa",
 	&"ferragem": "Ferragem",
 	&"feira": "Feira",
@@ -84,7 +86,17 @@ const TRAVEL_MINUTES := {
 	&"fazenda|floresta": 30,
 	&"fazenda|cidade": 60,
 	&"floresta|cidade": 90,
+	&"fazenda|vila": 15,
+	&"floresta|vila": 30,
+	&"vila|cidade": 45,
+	# A cidade grande é longe: a pé é inviável (Q3) e exige veículo.
+	&"fazenda|cidade_grande": 240,
+	&"floresta|cidade_grande": 270,
+	&"vila|cidade_grande": 225,
+	&"cidade|cidade_grande": 180,
 }
+## Locais que só se alcança com veículo (Q3).
+const NEEDS_VEHICLE: Array[StringName] = [&"cidade_grande"]
 
 ## Limite de m² da fazenda, somando todos os seus locais (L7). Valor
 ## provisório; cresce por expansão no futuro.
@@ -382,10 +394,14 @@ func travel_to(id: StringName) -> bool:
 		return false
 	if not has_location(id) or not is_unlocked(id):
 		return false
+	if root_of(id) in NEEDS_VEHICLE and not Vehicles.has_usable(self):
+		return false # a pé é inviável (Q3)
 	_close_storage_internal()
-	# A viagem gasta minutos (T1). Se a meia-noite cair no caminho, o dia
-	# acaba e o jogador acorda às 06:00 já no destino.
-	advance_time(ceili(travel_minutes(current_location, id) * buff_multiplier("time_mult")))
+	# A viagem gasta minutos (T1). Um veículo na mão reduz o tempo e gasta
+	# combustível (Q6, Q8). Se a meia-noite cair no caminho, o dia acaba e o
+	# jogador acorda às 06:00 já no destino.
+	var base := Vehicles.trip_minutes(self, travel_minutes(current_location, id), true)
+	advance_time(ceili(base * buff_multiplier("time_mult")))
 	current_location = id
 	arrived.emit(id)
 	areas_changed.emit()
@@ -687,10 +703,11 @@ func area_weight(area: StringName) -> int:
 func area_limit(area: StringName) -> int:
 	var holder: Dictionary = {}
 	if area == BACKPACK:
+		var best := 0
 		for c in hand:
-			if has_prop(c, &"backpack"):
-				holder = c
-				break
+			if has_prop(c, &"backpack") and int(def_of(c).extra.get("weight_limit", 0)) >= best:
+				best = int(def_of(c).extra.get("weight_limit", 0))
+				holder = c # usa a maior mochila na mão (Q10)
 	elif area == STORAGE:
 		for c in hand:
 			if int(c["uid"]) == open_storage_uid:
@@ -800,6 +817,17 @@ func repair_location(id: StringName) -> bool:
 ## Comando: sobe o nível de uma construção (B7).
 func upgrade_location(id: StringName) -> bool:
 	return Buildings.upgrade(self, id)
+
+
+## Comando: paga a hospedagem e dorme na vila (Q4).
+const INN_PRICE := 30
+
+
+func sleep_at_inn() -> bool:
+	if is_game_over or current_location != &"vila" or not Economy.spend(self, INN_PRICE):
+		return false
+	sleep()
+	return true
 
 
 ## Comando: manda um animal para o corte (A6).

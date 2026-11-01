@@ -41,9 +41,9 @@ func _initialize() -> void:
 	_check(notice.size() == 1 and "2 carta" in notice[0]["state"]["text"], "o aviso conta quantas cartas (%s)" % str(notice.size()))
 	s.select_card(box["uid"])
 
-	# US-16.4 / H5: buscar na cidade
-	_check(not s.claim_lost(s.lost_and_found[0]["uid"]), "na fazenda não dá para buscar")
-	s.travel_to(&"cidade")
+	# US-16.4 / H5: buscar na vila
+	_check(not s.claim_lost(s.lost_and_found[0]["uid"]), "fora da vila não dá para buscar")
+	s.travel_to(&"vila")
 	var found: Dictionary = s.lost_and_found.filter(func(c: Dictionary) -> bool: return c["id"] == "colheita")[0]
 	_check(LostFound.days_left(s, found) == 7, "7 dias restantes")
 	_check(s.claim_lost(found["uid"]), "pegou a colheita")

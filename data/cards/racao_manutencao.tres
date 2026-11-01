@@ -8,4 +8,4 @@ id = &"racao_manutencao"
 display_name = "Ração de manutenção"
 props = PackedStringArray("stackable", "movable")
 weight = 1000
-extra = {"price": 6, "shop": "ferragem"}
+extra = {"price": 6, "shop": ["ferragem", "vila"]}
